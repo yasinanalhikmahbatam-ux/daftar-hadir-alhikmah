@@ -1,0 +1,13 @@
+```json
+{
+  "name": "Daftar Hadir Jamaah Pengajian AL-HIKMAH",
+  "short_name": "Hadir AL-HIKMAH",
+  "description": "Aplikasi daftar hadir jamaah pengajian mingguan AL-HIKMAH",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f3f7f4",
+  "theme_color": "#176b45",
+  "lang": "id"
+}
+```
