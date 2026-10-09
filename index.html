@@ -26,25 +26,23 @@ text-align:center;
 padding:15px;
 }
 
-.card{
-background:white;
-padding:20px;
-border-radius:15px;
-margin-bottom:15px;
-box-shadow:0 3px 8px #ddd;
-}
-
 .grid{
 display:grid;
 grid-template-columns:1fr 1fr;
 gap:15px;
 }
 
-.menu{
+.card,.menu{
 background:white;
 padding:20px;
 border-radius:15px;
+margin-top:15px;
+box-shadow:0 3px 8px #ddd;
+}
+
+.menu{
 text-align:center;
+cursor:pointer;
 }
 
 .angka{
@@ -57,9 +55,9 @@ input,textarea{
 
 width:100%;
 padding:12px;
+box-sizing:border-box;
 margin-top:8px;
 margin-bottom:10px;
-box-sizing:border-box;
 border-radius:8px;
 border:1px solid #ccc;
 
@@ -68,13 +66,13 @@ border:1px solid #ccc;
 
 button{
 
+width:100%;
+padding:12px;
 background:#087f5b;
 color:white;
-border:none;
-padding:12px;
-width:100%;
+border:0;
 border-radius:10px;
-cursor:pointer;
+font-size:16px;
 
 }
 
@@ -83,9 +81,9 @@ cursor:pointer;
 
 background:white;
 padding:15px;
-border-radius:14px;
+border-radius:12px;
 margin-bottom:10px;
-box-shadow:0 2px 6px #ddd;
+box-shadow:0 2px 5px #ddd;
 
 }
 
@@ -101,8 +99,15 @@ color:#087f5b;
 
 .no{
 
-font-size:13px;
 color:#777;
+font-size:13px;
+
+}
+
+
+.hidden{
+
+display:none;
 
 }
 
@@ -126,6 +131,7 @@ PENGAJIAN AL-HIKMAH
 
 
 <div class="container">
+
 
 
 <div class="grid">
@@ -159,6 +165,7 @@ Absensi
 
 
 
+
 <div class="card">
 
 
@@ -185,21 +192,26 @@ Simpan Jamaah
 
 
 
+
 <div class="card">
 
 <h3>
 Daftar Jamaah
 </h3>
 
-<div id="daftarJamaah"></div>
+<div id="daftarJamaah">
+Memuat...
+</div>
+
 
 </div>
 
 
 
-<div class="card"
-id="halamanAbsensi"
-style="display:none;">
+
+
+
+<div class="card hidden" id="halamanAbsensi">
 
 
 <h3>
@@ -207,9 +219,7 @@ Absensi Mingguan
 </h3>
 
 
-<input type="date"
-id="tanggalAbsensi">
-
+<input type="date" id="tanggalAbsensi">
 
 
 <div id="daftarAbsensi"></div>
@@ -245,6 +255,11 @@ let dataJamaah=[];
 
 
 
+
+// =====================
+// AMBIL DATA JAMAAH
+// =====================
+
 function loadData(){
 
 
@@ -255,19 +270,18 @@ fetch(API_URL+"?action=jamaah")
 .then(res=>{
 
 
-dataJamaah=res.data;
+dataJamaah=res.data || [];
 
 
-document.getElementById(
-"jumlahJamaah"
-).innerHTML=dataJamaah.length;
+jumlahJamaah.innerHTML=
+dataJamaah.length;
 
 
 
 let html="";
 
 
-dataJamaah.forEach((j,i)=>{
+dataJamaah.forEach(function(j,i){
 
 
 html+=`
@@ -297,9 +311,8 @@ ${j.alamat || "-"}
 });
 
 
-document.getElementById(
-"daftarJamaah"
-).innerHTML=html;
+daftarJamaah.innerHTML=
+html || "Belum ada jamaah";
 
 
 });
@@ -309,53 +322,42 @@ document.getElementById(
 
 
 
+loadData();
 
+
+
+
+
+
+// =====================
+// SIMPAN JAMAAH
+// =====================
 
 function simpanJamaah(){
 
 
 let data={
 
+
 action:"simpanJamaah",
 
 nama:
 nama.value,
 
+
 alamat:
 alamat.value
+
 
 };
 
 
 
-fetch(API_URL,{
-
-method:"POST",
-
-body:JSON.stringify(data)
-
-})
-
-
-.then(r=>r.json())
-
-.then(res=>{
-
-
-alert(
-res.pesan || "Berhasil"
-);
+kirim(data);
 
 
 nama.value="";
-
 alamat.value="";
-
-
-loadData();
-
-
-});
 
 
 }
@@ -364,11 +366,14 @@ loadData();
 
 
 
+// =====================
+// BUKA ABSENSI
+// =====================
 
 function bukaAbsensi(){
 
 
-halamanAbsensi.style.display="block";
+halamanAbsensi.classList.remove("hidden");
 
 
 buatAbsensi();
@@ -386,7 +391,7 @@ function buatAbsensi(){
 let html="";
 
 
-dataJamaah.forEach(j=>{
+dataJamaah.forEach(function(j){
 
 
 html+=`
@@ -399,10 +404,14 @@ ${j.nama}
 </div>
 
 
+<div>
 <input type="checkbox"
-id="hadir_${j.id}">
+id="hadir_${j.id}"
+checked>
 
- Hadir
+✅ Hadir
+
+</div>
 
 
 </div>
@@ -424,6 +433,11 @@ daftarAbsensi.innerHTML=html;
 
 
 
+// =====================
+// SIMPAN ABSENSI
+// =====================
+
+
 function simpanAbsensi(){
 
 
@@ -435,7 +449,6 @@ tanggalAbsensi.value;
 if(!tanggal){
 
 alert("Pilih tanggal dulu");
-
 return;
 
 }
@@ -446,7 +459,7 @@ let daftar=[];
 
 
 
-dataJamaah.forEach(j=>{
+dataJamaah.forEach(function(j){
 
 
 let cek=
@@ -456,27 +469,29 @@ document.getElementById(
 
 
 
+if(cek.checked){
+
+
 daftar.push({
 
 idJamaah:j.id,
 
 nama:j.nama,
 
-status:
-cek.checked
-?"Hadir"
-:""
+status:"Hadir"
+
+});
+
+
+}
 
 
 });
 
 
-});
 
 
-
-
-let data={
+let payload={
 
 
 action:"saveAttendance",
@@ -490,25 +505,70 @@ data:daftar
 
 
 
+kirim(payload);
+
+
+}
+
+
+
+
+
+
+// =====================
+// KIRIM KE APPS SCRIPT
+// =====================
+
+
+function kirim(data){
+
+
 
 fetch(API_URL,{
 
 method:"POST",
 
-body:JSON.stringify(data)
+headers:{
+
+"Content-Type":
+"application/x-www-form-urlencoded"
+
+},
+
+body:
+
+"payload="+
+encodeURIComponent(
+JSON.stringify(data)
+)
+
 
 })
 
 
 .then(r=>r.json())
 
+
 .then(res=>{
 
 
 alert(
 res.pesan ||
-res.message ||
-"Absensi tersimpan"
+res.message
+);
+
+
+loadData();
+
+
+})
+
+
+.catch(err=>{
+
+
+alert(
+"Gagal: "+err
 );
 
 
@@ -519,14 +579,8 @@ res.message ||
 
 
 
-
-
-loadData();
-
-
 </script>
 
 
 </body>
-
 </html>
