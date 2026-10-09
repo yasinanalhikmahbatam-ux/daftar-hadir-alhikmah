@@ -10,189 +10,465 @@
   <style>
     * { box-sizing: border-box; }
     body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f3f7f4;
-      color: #203329;
+      margin: 0; font-family: Arial, sans-serif;
+      background: #f3f7f4; color: #203329;
     }
     header {
-      background: #176b45;
-      color: white;
-      padding: 24px 16px;
-      text-align: center;
+      background: #176b45; color: white;
+      padding: 24px 16px; text-align: center;
     }
     header h1 { margin: 0 0 8px; font-size: 23px; }
     header p { margin: 0; font-size: 14px; }
     main { max-width: 900px; margin: 22px auto; padding: 0 14px; }
     .card {
-      background: white;
-      border-radius: 12px;
-      padding: 18px;
-      margin-bottom: 16px;
-      box-shadow: 0 2px 8px #0000000d;
+      background: white; border-radius: 12px; padding: 18px;
+      margin-bottom: 16px; box-shadow: 0 2px 8px #0000000d;
     }
     h2 { color: #176b45; font-size: 19px; margin-top: 0; }
     label { display: block; margin: 12px 0 6px; font-weight: bold; }
     input, select, button {
-      width: 100%;
-      padding: 11px;
-      border: 1px solid #cbd8cf;
-      border-radius: 7px;
-      font-size: 15px;
+      width: 100%; padding: 11px; border: 1px solid #cbd8cf;
+      border-radius: 7px; font-size: 15px;
     }
     button {
-      border: 0;
-      background: #176b45;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 12px;
+      border: 0; background: #176b45; color: white;
+      font-weight: bold; cursor: pointer; margin-top: 12px;
     }
     button.secondary { background: #e2eee6; color: #176b45; }
-    .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    button.danger { background: #a83232; }
+    .grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 12px; }
     .stat { background: #e5f3e9; border-radius: 9px; padding: 15px; text-align: center; }
     .stat strong { display: block; color: #176b45; font-size: 27px; margin-top: 6px; }
-    .muted { color: #617268; font-size: 13px; }
-    #status { white-space: pre-wrap; line-height: 1.5; }
+    .muted { color: #617268; font-size: 13px; line-height: 1.5; }
+    #status { white-space: pre-wrap; line-height: 1.5; overflow-wrap: anywhere; }
+    .item { border-top: 1px solid #e0e8e2; padding: 12px 0; }
+    .item:first-child { border-top: 0; }
+    .item button { width: auto; padding: 8px 12px; }
+    .person { display: grid; grid-template-columns: 1fr 130px; gap: 10px; align-items: center; }
+    .person label { margin: 0; }
+    .person select { min-width: 0; }
+    .small { font-size: 13px; }
     @media (max-width: 560px) {
-      .grid { grid-template-columns: 1fr; }
+      .grid { grid-template-columns: 1fr 1fr; }
       header h1 { font-size: 20px; }
+      .person { grid-template-columns: 1fr 115px; }
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>DAFTAR HADIR JAMAAH PENGAJIAN AL-HIKMAH</h1>
-    <p>Pencatatan kehadiran pengajian mingguan</p>
-  </header>
+<header>
+  <h1>DAFTAR HADIR JAMAAH PENGAJIAN AL-HIKMAH</h1>
+  <p>Pencatatan kehadiran pengajian mingguan</p>
+</header>
 
-  <main>
-    <section class="card">
-      <h2>Pengaturan Koneksi</h2>
-      <p class="muted">Alamat ini menghubungkan aplikasi dengan Google Sheets melalui Apps Script.</p>
-      <label for="apiUrl">URL Web App Google Apps Script</label>
-      <input id="apiUrl" type="url" placeholder="Tempel URL Web App di sini">
-      <button id="saveUrl">Simpan URL</button>
-      <p id="status">Koneksi belum diperiksa.</p>
-    </section>
+<main>
+  <section class="card">
+    <h2>Pengaturan Koneksi</h2>
+    <label for="apiUrl">URL Web App Google Apps Script</label>
+    <input id="apiUrl" type="url" placeholder="Tempel URL Web App">
+    <button id="saveUrl">Simpan URL</button>
+    <p id="status" class="muted">Masukkan URL database, lalu periksa koneksi.</p>
+    <button id="checkConnection" class="secondary">Periksa Koneksi Database</button>
+  </section>
 
-    <section class="card">
-      <h2>Ringkasan Kehadiran</h2>
-      <div class="grid">
-        <div class="stat">Jumlah Jamaah<strong id="total">0</strong></div>
-        <div class="stat">Hadir<strong id="present">0</strong></div>
-      </div>
-      <button id="checkConnection" class="secondary">Periksa Koneksi Database</button>
-    </section>
+  <section class="card">
+    <h2>Ringkasan Kehadiran</h2>
+    <div class="grid">
+      <div class="stat">Jumlah Jamaah<strong id="total">0</strong></div>
+      <div class="stat">Hadir<strong id="present">0</strong></div>
+    </div>
+  </section>
 
-    <section class="card">
-      <h2>Data Jamaah</h2>
-      <label for="memberName">Nama Jamaah</label>
-      <input id="memberName" type="text" placeholder="Masukkan nama jamaah">
-      <button id="addMember">Tambah Jamaah</button>
-      <p class="muted">Daftar jamaah akan ditampilkan setelah koneksi database berhasil.</p>
-      <div id="members">Belum ada data yang dimuat.</div>
-    </section>
+  <section class="card">
+    <h2>Tambah Jamaah</h2>
+    <label for="memberName">Nama Jamaah *</label>
+    <input id="memberName" maxlength="150" placeholder="Nama lengkap">
+    <label for="memberPhone">Nomor Telepon</label>
+    <input id="memberPhone" type="tel" maxlength="30" placeholder="Opsional">
+    <label for="memberAddress">Alamat</label>
+    <input id="memberAddress" maxlength="250" placeholder="Opsional">
+    <button id="addMember">Simpan Jamaah</button>
+  </section>
 
-    <section class="card">
-      <h2>Daftar Hadir Mingguan</h2>
-      <label for="meetingDate">Tanggal Pengajian</label>
-      <input id="meetingDate" type="date">
-      <button id="loadAttendance" class="secondary">Muat Daftar Hadir</button>
-      <div id="attendance">Daftar hadir belum dimuat.</div>
-      <button id="saveAttendance">Simpan Kehadiran</button>
-    </section>
+  <section class="card">
+    <h2>Data Jamaah</h2>
+    <button id="refreshMembers" class="secondary">Muat Ulang Jamaah</button>
+    <div id="members">Belum dimuat.</div>
+  </section>
 
-    <section class="card">
-      <h2>Rekap Bulanan</h2>
-      <label for="reportMonth">Pilih Bulan</label>
-      <input id="reportMonth" type="month">
-      <button id="loadReport" class="secondary">Tampilkan Rekap</button>
-      <div id="report">Rekap belum dimuat.</div>
-    </section>
-  </main>
+  <section class="card">
+    <h2>Daftar Hadir Mingguan</h2>
+    <label for="meetingDate">Tanggal Pengajian</label>
+    <input id="meetingDate" type="date">
+    <button id="loadAttendance" class="secondary">Muat Daftar Hadir</button>
+    <div id="attendance">Pilih tanggal lalu muat daftar hadir.</div>
+    <button id="saveAttendance">Simpan Kehadiran</button>
+  </section>
 
-  <script>
-    const $ = id => document.getElementById(id);
-    const today = new Date();
-    $('meetingDate').value =
-      `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
-    $('reportMonth').value = $('meetingDate').value.slice(0,7);
+  <section class="card">
+    <h2>Rekap Bulanan</h2>
+    <label for="reportMonth">Pilih Bulan</label>
+    <input id="reportMonth" type="month">
+    <button id="loadReport" class="secondary">Tampilkan Rekap</button>
+    <div id="report">Rekap belum dimuat.</div>
+  </section>
+</main>
 
-    $('saveUrl').addEventListener('click', () => {
-      const url = $('apiUrl').value.trim();
-      if (!url.startsWith('https://script.google.com/macros/s/')) {
-        $('status').textContent = 'Periksa kembali URL Web App. URL harus diawali https://script.google.com/macros/s/';
-        return;
-      }
-      localStorage.setItem('alhikmahApiUrl', url);
-      $('status').textContent = 'URL tersimpan di browser. Klik Periksa Koneksi Database.';
+<iframe name="postTarget" id="postTarget" title="Pengiriman data" style="display:none"></iframe>
+
+<script>
+const $ = id => document.getElementById(id);
+let jamaah = [];
+let daftarHadir = [];
+
+const now = new Date();
+const today = [
+  now.getFullYear(),
+  String(now.getMonth() + 1).padStart(2, '0'),
+  String(now.getDate()).padStart(2, '0')
+].join('-');
+$('meetingDate').value = today;
+$('reportMonth').value = today.slice(0, 7);
+
+const savedUrl = localStorage.getItem('alhikmahApiUrl');
+if (savedUrl) $('apiUrl').value = savedUrl;
+
+function setStatus(message) {
+  $('status').textContent = message;
+}
+
+function getApiUrl() {
+  return $('apiUrl').value.trim() ||
+    localStorage.getItem('alhikmahApiUrl') || '';
+}
+
+function escapeHtml(value) {
+  return String(value ?? '').replace(/[&<>"']/g, char => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;',
+    '"': '&quot;', "'": '&#39;'
+  })[char]);
+}
+
+function request(action, extra = {}) {
+  return new Promise((resolve, reject) => {
+    const url = getApiUrl();
+    if (!url) {
+      reject(new Error('Masukkan URL Web App terlebih dahulu.'));
+      return;
+    }
+
+    const callback = 'alhikmah_cb_' + Date.now() +
+      '_' + Math.floor(Math.random() * 100000);
+    const script = document.createElement('script');
+    const params = new URLSearchParams({
+      action, callback, ...extra
     });
+    let timer;
 
-    const savedUrl = localStorage.getItem('alhikmahApiUrl');
-    if (savedUrl) $('apiUrl').value = savedUrl;
+    window[callback] = data => {
+      clearTimeout(timer);
+      delete window[callback];
+      script.remove();
+      resolve(data);
+    };
 
-    function apiUrl() {
-      return $('apiUrl').value.trim() || localStorage.getItem('alhikmahApiUrl') || '';
+    script.onerror = () => {
+      clearTimeout(timer);
+      delete window[callback];
+      script.remove();
+      reject(new Error('Koneksi gagal. Periksa URL dan deployment Apps Script.'));
+    };
+
+    timer = setTimeout(() => {
+      delete window[callback];
+      script.remove();
+      reject(new Error('Waktu koneksi habis. Silakan coba lagi.'));
+    }, 20000);
+
+    script.src = url + '?' + params.toString();
+    document.body.appendChild(script);
+  });
+}
+
+/* Mengirim data dengan POST melalui formulir tersembunyi. */
+function postData(payload) {
+  return new Promise((resolve, reject) => {
+    const url = getApiUrl();
+    if (!url) {
+      reject(new Error('Masukkan URL Web App terlebih dahulu.'));
+      return;
     }
 
-    function request(action, extra = {}) {
-      return new Promise((resolve, reject) => {
-        const url = apiUrl();
-        if (!url) return reject(new Error('Isi URL Web App terlebih dahulu.'));
-        const callback = 'alhikmah_cb_' + Date.now() + '_' + Math.floor(Math.random()*10000);
-        const script = document.createElement('script');
-        const params = new URLSearchParams({ action, callback, ...extra });
-        window[callback] = data => {
-          delete window[callback];
-          script.remove();
-          resolve(data);
-        };
-        script.onerror = () => {
-          delete window[callback];
-          script.remove();
-          reject(new Error('Tidak dapat menghubungi database. Periksa URL dan pengaturan deployment Apps Script.'));
-        };
-        script.src = url + '?' + params.toString();
-        document.body.appendChild(script);
-      });
-    }
+    const iframe = $('postTarget');
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = url;
+    form.target = 'postTarget';
+    form.style.display = 'none';
 
-    $('checkConnection').addEventListener('click', async () => {
-      $('status').textContent = 'Memeriksa koneksi...';
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = 'payload';
+    input.value = JSON.stringify(payload);
+    form.appendChild(input);
+    document.body.appendChild(form);
+
+    let finished = false;
+    const finish = () => {
+      if (finished) return;
+      finished = true;
+      form.remove();
+      resolve();
+    };
+
+    iframe.addEventListener('load', finish, { once: true });
+    form.submit();
+
+    /* Respons POST tidak dibaca lintas domain; muat ulang data setelah pengiriman. */
+    setTimeout(finish, 2500);
+  });
+}
+
+async function loadMembers() {
+  const result = await request('members');
+  if (!result.ok) throw new Error(result.message || 'Gagal memuat jamaah.');
+  jamaah = result.data || [];
+  renderMembers();
+  $('total').textContent = jamaah.filter(m => m.aktif).length;
+}
+
+function renderMembers() {
+  const aktif = jamaah.filter(m => m.aktif);
+  if (!aktif.length) {
+    $('members').textContent = 'Belum ada jamaah aktif. Tambahkan jamaah melalui formulir di atas.';
+    return;
+  }
+
+  $('members').innerHTML = aktif.map(m => `
+    <div class="item">
+      <strong>${escapeHtml(m.nama)}</strong>
+      <div class="muted">${escapeHtml(m.telepon || '')}
+        ${m.alamat ? ' · ' + escapeHtml(m.alamat) : ''}</div>
+      <button class="danger small" data-delete="${escapeHtml(m.id)}">Nonaktifkan</button>
+    </div>
+  `).join('');
+
+  $('members').querySelectorAll('[data-delete]').forEach(button => {
+    button.addEventListener('click', async () => {
+      if (!confirm('Nonaktifkan jamaah ini?')) return;
       try {
-        const data = await request('init');
-        $('status').textContent = 'Respons database diterima. Struktur data: ' + JSON.stringify(data);
-      } catch (e) {
-        $('status').textContent = 'Koneksi gagal: ' + e.message;
+        setStatus('Mengirim permintaan...');
+        await postData({ action: 'deleteMember', id: button.dataset.delete });
+        await new Promise(resolve => setTimeout(resolve, 1200));
+        await loadMembers();
+        setStatus('Permintaan penonaktifan dikirim. Periksa kembali data jamaah.');
+      } catch (error) {
+        setStatus('Gagal: ' + error.message);
       }
     });
+  });
+}
 
-    $('addMember').addEventListener('click', () => {
-      $('status').textContent = 'Tampilan awal sudah siap. Fitur simpan jamaah perlu disambungkan setelah pemeriksaan koneksi.';
+async function loadAttendance() {
+  const tanggal = $('meetingDate').value;
+  if (!tanggal) throw new Error('Pilih tanggal pengajian.');
+
+  await loadMembers();
+  const result = await request('attendance', { tanggal });
+  if (!result.ok) throw new Error(result.message || 'Gagal memuat kehadiran.');
+
+  const saved = {};
+  (result.data || []).forEach(item => saved[item.idJamaah] = item);
+
+  daftarHadir = jamaah.filter(m => m.aktif).map(m => ({
+    idJamaah: m.id,
+    nama: m.nama,
+    status: saved[m.id]?.status || 'Alfa',
+    catatan: saved[m.id]?.catatan || ''
+  }));
+
+  renderAttendance();
+  updatePresent();
+}
+
+function renderAttendance() {
+  if (!daftarHadir.length) {
+    $('attendance').textContent = 'Belum ada jamaah aktif. Tambahkan data jamaah terlebih dahulu.';
+    return;
+  }
+
+  $('attendance').innerHTML = daftarHadir.map((item, index) => `
+    <div class="item">
+      <strong>${escapeHtml(item.nama)}</strong>
+      <div class="person">
+        <label for="status-${index}">Status</label>
+        <select id="status-${index}" data-status="${index}">
+          ${['Hadir','Izin','Sakit','Alfa'].map(status =>
+            `<option ${item.status === status ? 'selected' : ''}>${status}</option>`
+          ).join('')}
+        </select>
+      </div>
+      <label for="note-${index}">Catatan (opsional)</label>
+      <input id="note-${index}" data-note="${index}"
+        value="${escapeHtml(item.catatan)}" placeholder="Catatan">
+    </div>
+  `).join('');
+
+  $('attendance').querySelectorAll('[data-status]').forEach(el => {
+    el.addEventListener('change', () => {
+      daftarHadir[Number(el.dataset.status)].status = el.value;
+      updatePresent();
     });
+  });
 
-    $('loadAttendance').addEventListener('click', () => {
-      $('status').textContent = 'Fitur pemuatan daftar hadir akan diaktifkan setelah format respons database diperiksa.';
+  $('attendance').querySelectorAll('[data-note]').forEach(el => {
+    el.addEventListener('input', () => {
+      daftarHadir[Number(el.dataset.note)].catatan = el.value;
     });
+  });
+}
 
-    $('saveAttendance').addEventListener('click', () => {
-      $('status').textContent = 'Fitur simpan kehadiran akan diaktifkan setelah koneksi database diuji.';
+function updatePresent() {
+  $('present').textContent = daftarHadir.filter(x => x.status === 'Hadir').length;
+}
+
+async function loadReport() {
+  const bulan = $('reportMonth').value;
+  const result = await request('report', bulan ? { bulan } : {});
+  if (!result.ok) throw new Error(result.message || 'Gagal memuat rekap.');
+
+  const rows = result.data || [];
+  if (!rows.length) {
+    $('report').textContent = 'Belum ada data kehadiran pada bulan ini.';
+    return;
+  }
+
+  $('report').innerHTML = `
+    <div class="item"><strong>Rekap kehadiran per jamaah</strong></div>
+    ${rows.map(item => `
+      <div class="item">
+        <strong>${escapeHtml(item.nama)}</strong>
+        <div class="muted">
+          Hadir: ${Number(item.Hadir || 0)} ·
+          Izin: ${Number(item.Izin || 0)} ·
+          Sakit: ${Number(item.Sakit || 0)} ·
+          Alfa: ${Number(item.Alfa || 0)}
+        </div>
+      </div>
+    `).join('')}
+  `;
+}
+
+$('saveUrl').addEventListener('click', () => {
+  const url = $('apiUrl').value.trim();
+  if (!url.startsWith('https://script.google.com/macros/s/')) {
+    setStatus('URL tidak sesuai. Pastikan memakai URL Web App Apps Script yang berakhiran /exec.');
+    return;
+  }
+  localStorage.setItem('alhikmahApiUrl', url);
+  setStatus('URL tersimpan. Klik Periksa Koneksi Database.');
+});
+
+$('checkConnection').addEventListener('click', async () => {
+  try {
+    setStatus('Memeriksa koneksi...');
+    const result = await request('init');
+    if (!result.ok) throw new Error(result.message || 'Database memberi respons gagal.');
+    await loadMembers();
+    setStatus('Koneksi berhasil. Judul database: ' + result.judul);
+  } catch (error) {
+    setStatus('Koneksi gagal: ' + error.message);
+  }
+});
+
+$('addMember').addEventListener('click', async () => {
+  const nama = $('memberName').value.trim();
+  if (!nama) {
+    setStatus('Nama jamaah wajib diisi.');
+    $('memberName').focus();
+    return;
+  }
+
+  try {
+    setStatus('Mengirim data jamaah...');
+    await postData({
+      action: 'saveMember',
+      nama,
+      telepon: $('memberPhone').value.trim(),
+      alamat: $('memberAddress').value.trim()
     });
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    await loadMembers();
+    $('memberName').value = '';
+    $('memberPhone').value = '';
+    $('memberAddress').value = '';
+    setStatus('Permintaan simpan jamaah dikirim. Pastikan nama muncul pada daftar.');
+  } catch (error) {
+    setStatus('Gagal mengirim data: ' + error.message);
+  }
+});
 
-    $('loadReport').addEventListener('click', () => {
-      $('status').textContent = 'Fitur rekap akan diaktifkan setelah koneksi database diuji.';
-    });
-  </script>
+$('refreshMembers').addEventListener('click', async () => {
+  try {
+    setStatus('Memuat data jamaah...');
+    await loadMembers();
+    setStatus('Data jamaah selesai dimuat.');
+  } catch (error) {
+    setStatus('Gagal: ' + error.message);
+  }
+});
 
-  <script>
-    if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js")
-          .catch(error => console.error("Service worker:", error));
-      });
+$('loadAttendance').addEventListener('click', async () => {
+  try {
+    setStatus('Memuat daftar hadir...');
+    await loadAttendance();
+    setStatus('Daftar hadir siap diisi.');
+  } catch (error) {
+    setStatus('Gagal memuat daftar hadir: ' + error.message);
+  }
+});
+
+$('saveAttendance').addEventListener('click', async () => {
+  try {
+    if (!daftarHadir.length) {
+      setStatus('Muat daftar hadir terlebih dahulu.');
+      return;
     }
-  </script>
+    setStatus('Mengirim data kehadiran...');
+    await postData({
+      action: 'saveAttendance',
+      tanggal: $('meetingDate').value,
+      data: daftarHadir.map(item => ({
+        idJamaah: item.idJamaah,
+        status: item.status,
+        catatan: item.catatan
+      }))
+    });
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    await loadAttendance();
+    setStatus('Permintaan simpan kehadiran dikirim. Periksa kembali daftar hadir.');
+  } catch (error) {
+    setStatus('Gagal: ' + error.message);
+  }
+});
+
+$('loadReport').addEventListener('click', async () => {
+  try {
+    setStatus('Memuat rekap bulanan...');
+    await loadReport();
+    setStatus('Rekap selesai dimuat.');
+  } catch (error) {
+    setStatus('Gagal memuat rekap: ' + error.message);
+  }
+});
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .catch(error => console.error('Service worker:', error));
+  });
+}
+</script>
 </body>
 </html>
 ```
