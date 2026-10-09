@@ -2,609 +2,261 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#166534">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Daftar Hadir Jamaah AL-HIKMAH</title>
 
 <style>
-:root {
-  --hijau: #166534;
-  --hijau-muda: #dcfce7;
-  --latar: #f3f6f4;
-  --teks: #17251b;
-  --garis: #dce5de;
+
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:#f2f5f9;
+  color:#333;
 }
-* { box-sizing: border-box; }
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  color: var(--teks);
-  background: var(--latar);
+
+.header{
+  background:#087f5b;
+  color:white;
+  padding:20px;
+  text-align:center;
 }
-header {
-  padding: 22px 16px;
-  background: var(--hijau);
-  color: white;
+
+.header h2{
+  margin:0;
 }
-header h1 { margin: 0 0 8px; font-size: 22px; }
-header p { margin: 0; font-size: 14px; }
-main { max-width: 950px; margin: auto; padding: 16px; }
-nav {
-  display: flex;
-  gap: 8px;
-  overflow-x: auto;
-  padding-bottom: 12px;
+
+.container{
+  padding:15px;
 }
-button, input, select {
-  font: inherit;
+
+
+.card{
+  background:white;
+  border-radius:15px;
+  padding:20px;
+  margin-bottom:15px;
+  box-shadow:0 3px 8px rgba(0,0,0,.1);
 }
-button {
-  cursor: pointer;
-  border: 0;
-  border-radius: 8px;
-  padding: 11px 14px;
+
+
+.grid{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:15px;
 }
-nav button {
-  background: white;
-  color: var(--hijau);
-  border: 1px solid var(--garis);
-  white-space: nowrap;
+
+
+.menu{
+ background:white;
+ padding:20px;
+ border-radius:15px;
+ text-align:center;
+ cursor:pointer;
+ box-shadow:0 3px 8px rgba(0,0,0,.1);
 }
-nav button.active, .utama {
-  background: var(--hijau);
-  color: white;
+
+
+.menu:hover{
+ background:#e8fff7;
 }
-.kartu {
-  background: white;
-  border: 1px solid var(--garis);
-  border-radius: 12px;
-  padding: 16px;
-  margin-bottom: 14px;
+
+
+.angka{
+ font-size:35px;
+ font-weight:bold;
+ color:#087f5b;
 }
-h2 { margin-top: 0; font-size: 19px; }
-h3 { font-size: 16px; }
-label {
-  display: block;
-  font-size: 14px;
-  font-weight: bold;
-  margin: 12px 0 6px;
+
+
+button{
+ background:#087f5b;
+ color:white;
+ border:none;
+ padding:12px 20px;
+ border-radius:10px;
+ width:100%;
+ font-size:16px;
 }
-input, select {
-  width: 100%;
-  padding: 11px;
-  border: 1px solid #cbd5ce;
-  border-radius: 8px;
-  background: white;
+
+
+.loading{
+ text-align:center;
+ padding:20px;
 }
-.form-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-}
-.tombol-baris {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-top: 14px;
-}
-.sekunder { background: #e5e7eb; color: #111827; }
-.hapus { background: #fee2e2; color: #991b1b; }
-.status {
-  padding: 10px 12px;
-  border-radius: 8px;
-  margin-bottom: 14px;
-  background: white;
-  border: 1px solid var(--garis);
-  white-space: pre-wrap;
-}
-.status.error { color: #991b1b; background: #fef2f2; }
-.status.sukses { color: #166534; background: #f0fdf4; }
-.tersembunyi { display: none !important; }
-.item-jamaah {
-  border-top: 1px solid var(--garis);
-  padding: 12px 0;
-}
-.item-jamaah:first-child { border-top: 0; }
-.nama { font-weight: bold; }
-.kecil { color: #647067; font-size: 13px; margin-top: 5px; }
-table { border-collapse: collapse; width: 100%; }
-th, td {
-  padding: 10px;
-  border-bottom: 1px solid var(--garis);
-  text-align: left;
-  font-size: 14px;
-  vertical-align: top;
-}
-th { background: #f0fdf4; }
-.tabel-scroll { overflow-x: auto; }
-.angka {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 8px;
-  margin-bottom: 14px;
-}
-.angka > div {
-  background: var(--hijau-muda);
-  padding: 12px 6px;
-  border-radius: 8px;
-  text-align: center;
-}
-.angka strong { display: block; font-size: 21px; }
-.angka span { font-size: 12px; }
-@media (max-width: 520px) {
-  main { padding: 10px; }
-  .form-grid { grid-template-columns: 1fr; }
-  .angka { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  header h1 { font-size: 19px; }
-}
-@media print {
-  header, nav, .jangan-cetak, #pesan { display: none !important; }
-  body { background: white; }
-  main { max-width: none; padding: 0; }
-  .kartu { border: 0; }
-}
+
+
 </style>
+
 </head>
 
+
 <body>
-<header>
-  <h1 id="judul">Daftar Hadir Jamaah Pengajian AL-HIKMAH</h1>
-  <p id="subjudul">Pencatatan kehadiran jamaah setiap pekan</p>
-</header>
 
-<main>
-  <div id="pesan" class="status">Menghubungkan ke database...</div>
 
-  <nav class="jangan-cetak">
-    <button class="active" data-halaman="hadir">Kehadiran</button>
-    <button data-halaman="jamaah">Data Jamaah</button>
-    <button data-halaman="rekap">Rekap Bulanan</button>
-    <button data-halaman="setelan">Pengaturan</button>
-  </nav>
+<div class="header">
 
-  <section id="hal-hadir">
-    <div class="kartu">
-      <h2>Catat Kehadiran</h2>
-      <label for="tanggal">Tanggal pertemuan</label>
-      <input type="date" id="tanggal">
-      <p class="kecil">Pilih status setiap jamaah, lalu simpan.</p>
-      <div id="daftar-hadir">Memuat daftar jamaah...</div>
-      <div class="tombol-baris jangan-cetak">
-        <button class="utama" onclick="simpanKehadiran()">Simpan Kehadiran</button>
-        <button class="sekunder" onclick="muatKehadiran()">Muat Ulang</button>
-      </div>
-    </div>
-  </section>
+<h2>
+DAFTAR HADIR JAMAAH<br>
+PENGAJIAN AL-HIKMAH
+</h2>
 
-  <section id="hal-jamaah" class="tersembunyi">
-    <div class="kartu">
-      <h2>Tambah atau Edit Jamaah</h2>
-      <input type="hidden" id="jamaah-id">
-      <label for="nama">Nama lengkap</label>
-      <input id="nama" maxlength="150" placeholder="Nama jamaah">
-      <div class="form-grid">
-        <div>
-          <label for="telepon">Nomor telepon</label>
-          <input id="telepon" maxlength="40" placeholder="Opsional">
-        </div>
-        <div>
-          <label for="alamat">Alamat</label>
-          <input id="alamat" maxlength="200" placeholder="Opsional">
-        </div>
-      </div>
-      <div class="tombol-baris jangan-cetak">
-        <button class="utama" onclick="simpanJamaah()">Simpan Jamaah</button>
-        <button class="sekunder" onclick="kosongkanForm()">Bersihkan Form</button>
-      </div>
-    </div>
-    <div class="kartu">
-      <h2>Daftar Jamaah Aktif</h2>
-      <div id="daftar-jamaah">Memuat data...</div>
-    </div>
-  </section>
+</div>
 
-  <section id="hal-rekap" class="tersembunyi">
-    <div class="kartu">
-      <h2>Rekap Kehadiran Bulanan</h2>
-      <label for="bulan">Pilih bulan</label>
-      <input type="month" id="bulan">
-      <div class="tombol-baris jangan-cetak">
-        <button class="utama" onclick="muatRekap()">Tampilkan Rekap</button>
-        <button class="sekunder" onclick="window.print()">Cetak / Simpan PDF</button>
-      </div>
-      <div id="hasil-rekap" style="margin-top:16px">Pilih bulan untuk melihat rekap.</div>
-    </div>
-  </section>
 
-  <section id="hal-setelan" class="tersembunyi">
-    <div class="kartu">
-      <h2>Pengaturan Aplikasi</h2>
-      <label for="judul-pengaturan">Judul aplikasi</label>
-      <input id="judul-pengaturan">
-      <label for="jadwal">Jadwal</label>
-      <select id="jadwal">
-        <option value="Mingguan">Mingguan</option>
-        <option value="Bulanan">Bulanan</option>
-        <option value="Lainnya">Lainnya</option>
-      </select>
-      <label for="hari">Hari pengajian</label>
-      <input id="hari" placeholder="Contoh: Minggu">
-      <div class="tombol-baris">
-        <button class="utama" onclick="simpanPengaturan()">Simpan Pengaturan</button>
-      </div>
-    </div>
-  </section>
-</main>
+
+<div class="container">
+
+
+<div class="card">
+
+<h3>Dashboard</h3>
+
+<div id="status" class="loading">
+Mengambil data...
+</div>
+
+
+</div>
+
+
+
+<div class="grid">
+
+
+<div class="menu">
+
+<div class="angka" id="jumlahJamaah">
+0
+</div>
+
+<p>
+👥 Jamaah
+</p>
+
+</div>
+
+
+
+<div class="menu">
+
+<div class="angka" id="jumlahHadir">
+0
+</div>
+
+<p>
+✅ Kehadiran
+</p>
+
+</div>
+
+
+</div>
+
+
+
+<br>
+
+
+<div class="card">
+
+<button onclick="tes()">
+Muat Ulang Data
+</button>
+
+</div>
+
+
+
+</div>
+
+
 
 <script>
-'use strict';
 
-// URL WEB APP GOOGLE APPS SCRIPT
-const API_URL = 'https://script.google.com/macros/s/AKfycbzqXLb9BCOr0L10m6JbfT8PFADR7GlKpeYXKyj6_CZE5kwArT0fUwdDP0H7M9SQJweY/exec';
 
-let jamaah = [];
-let dataKehadiran = [];
-let pengaturan = {};
+const API_URL =
+"https://script.google.com/macros/s/AKfycbzrdmWWyFdavRs5ZZa83gPWTSH0TXYu5wN98dLXIamohtfwceAmrUj69XDQGpz-Ta9t/exec";
 
-function tanggalHariIni() {
-  const d = new Date();
-  const lokal = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
-  return lokal.toISOString().slice(0, 10);
+
+
+function tes(){
+
+
+fetch(API_URL+"?action=init")
+
+.then(r=>r.json())
+
+.then(data=>{
+
+
+console.log(data);
+
+
+
+if(data.ok){
+
+
+document.getElementById(
+"jumlahJamaah"
+).innerHTML=data.jumlahJamaah;
+
+
+
+document.getElementById(
+"jumlahHadir"
+).innerHTML=data.jumlahHadir;
+
+
+
+document.getElementById(
+"status"
+).innerHTML=
+"Database terhubung ✅";
+
+
 }
 
-function bulanHariIni() {
-  return tanggalHariIni().slice(0, 7);
+
+else{
+
+
+document.getElementById(
+"status"
+).innerHTML=data.pesan;
+
+
 }
 
-function pesan(teks, tipe) {
-  const el = document.getElementById('pesan');
-  el.textContent = teks;
-  el.className = 'status' + (tipe ? ' ' + tipe : '');
-}
 
-function aman(teks) {
-  return String(teks == null ? '' : teks).replace(/[&<>"']/g, function (c) {
-    return {
-      '&': '&amp;',
-      '<': '&lt;',
-      '>': '&gt;',
-      '"': '&quot;',
-      "'": '&#39;'
-    }[c];
-  });
-}
 
-// Mengirim permintaan melalui JSONP.
-function panggilServer(aksi, data) {
-  return new Promise(function (resolve, reject) {
-    const callback = '__hadir_cb_' +
-      Date.now().toString(36) + '_' +
-      Math.random().toString(36).slice(2);
+})
 
-    const script = document.createElement('script');
-    let selesai = false;
 
-    const timer = setTimeout(function () {
-      beres(new Error('Server tidak merespons. Periksa koneksi dan URL Apps Script.'));
-    }, 25000);
+.catch(err=>{
 
-    function beres(err, hasil) {
-      if (selesai) return;
-      selesai = true;
-      clearTimeout(timer);
-      delete window[callback];
-      script.remove();
 
-      if (err) reject(err);
-      else if (!hasil || hasil.ok !== true) {
-        reject(new Error(hasil && hasil.message ? hasil.message : 'Permintaan gagal.'));
-      } else {
-        resolve(hasil);
-      }
-    }
+document.getElementById(
+"status"
+).innerHTML=
+"Koneksi gagal";
 
-    window[callback] = function (hasil) {
-      beres(null, hasil);
-    };
 
-    const parameter = new URLSearchParams();
-    parameter.set('callback', callback);
+console.log(err);
 
-    if (data && Object.keys(data).length) {
-      const isi = Object.assign({}, data, { action: aksi });
-      parameter.set('payload', JSON.stringify(isi));
-    } else {
-      parameter.set('action', aksi);
-    }
 
-    script.onerror = function () {
-      beres(new Error('Tidak dapat menghubungi Apps Script. Periksa URL dan deployment.'));
-    };
-
-    script.src = API_URL + '?' + parameter.toString();
-    document.head.appendChild(script);
-  });
-}
-
-async function mulai() {
-  document.getElementById('tanggal').value = tanggalHariIni();
-  document.getElementById('bulan').value = bulanHariIni();
-
-  try {
-    const hasil = await panggilServer('init');
-    jamaah = hasil.jamaah || [];
-    pengaturan = {
-      judul: hasil.judul || 'Daftar Hadir Jamaah Pengajian AL-HIKMAH',
-      jadwal: hasil.jadwal || 'Mingguan',
-      hariPengajian: hasil.hariPengajian || ''
-    };
-
-    document.getElementById('judul').textContent = pengaturan.judul;
-    document.getElementById('judul-pengaturan').value = pengaturan.judul;
-    document.getElementById('jadwal').value = pengaturan.jadwal;
-    document.getElementById('hari').value = pengaturan.hariPengajian;
-    document.getElementById('subjudul').textContent =
-      'Jadwal: ' + pengaturan.jadwal +
-      (pengaturan.hariPengajian ? ' • ' + pengaturan.hariPengajian : '');
-
-    tampilkanJamaah();
-    await muatKehadiran();
-    pesan('Terhubung. Data aplikasi berhasil dimuat.', 'sukses');
-  } catch (err) {
-    pesan('Gagal memuat data: ' + err.message, 'error');
-    document.getElementById('daftar-hadir').textContent =
-      'Data belum dapat dimuat. Periksa URL Apps Script dan akses deployment.';
-  }
-}
-
-function aktifkanHalaman(nama) {
-  ['hadir', 'jamaah', 'rekap', 'setelan'].forEach(function (halaman) {
-    document.getElementById('hal-' + halaman)
-      .classList.toggle('tersembunyi', halaman !== nama);
-  });
-
-  document.querySelectorAll('nav button').forEach(function (tombol) {
-    tombol.classList.toggle('active', tombol.dataset.halaman === nama);
-  });
-
-  if (nama === 'jamaah') tampilkanJamaah();
-  if (nama === 'hadir') muatKehadiran();
-  if (nama === 'rekap') muatRekap();
-}
-
-document.querySelectorAll('nav button').forEach(function (tombol) {
-  tombol.addEventListener('click', function () {
-    aktifkanHalaman(tombol.dataset.halaman);
-  });
 });
 
-document.getElementById('tanggal').addEventListener('change', muatKehadiran);
 
-function tampilkanJamaah() {
-  const aktif = jamaah.filter(function (j) { return j.aktif; });
-  const kotak = document.getElementById('daftar-jamaah');
-
-  if (!aktif.length) {
-    kotak.textContent = 'Belum ada jamaah aktif. Tambahkan jamaah terlebih dahulu.';
-    return;
-  }
-
-  kotak.innerHTML = aktif.map(function (j) {
-    return '<div class="item-jamaah">' +
-      '<div class="nama">' + aman(j.no) + '. ' + aman(j.nama) + '</div>' +
-      '<div class="kecil">' + aman(j.telepon || 'Tanpa telepon') +
-      ' • ' + aman(j.alamat || 'Tanpa alamat') + '</div>' +
-      '<div class="tombol-baris jangan-cetak">' +
-      '<button class="sekunder" onclick="editJamaah(\'' + aman(j.id) + '\')">Edit</button>' +
-      '<button class="hapus" onclick="nonaktifkanJamaah(\'' + aman(j.id) + '\')">Nonaktifkan</button>' +
-      '</div></div>';
-  }).join('');
 }
 
-function editJamaah(id) {
-  const j = jamaah.find(function (x) { return x.id === id; });
-  if (!j) return;
 
-  document.getElementById('jamaah-id').value = j.id;
-  document.getElementById('nama').value = j.nama;
-  document.getElementById('telepon').value = j.telepon || '';
-  document.getElementById('alamat').value = j.alamat || '';
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
 
-function kosongkanForm() {
-  document.getElementById('jamaah-id').value = '';
-  document.getElementById('nama').value = '';
-  document.getElementById('telepon').value = '';
-  document.getElementById('alamat').value = '';
-}
+tes();
 
-async function simpanJamaah() {
-  const data = {
-    id: document.getElementById('jamaah-id').value,
-    nama: document.getElementById('nama').value.trim(),
-    telepon: document.getElementById('telepon').value.trim(),
-    alamat: document.getElementById('alamat').value.trim()
-  };
 
-  if (!data.nama) {
-    pesan('Silakan isi nama jamaah.', 'error');
-    return;
-  }
-
-  try {
-    pesan('Menyimpan data jamaah...');
-    const hasil = await panggilServer('saveMember', data);
-    const daftar = await panggilServer('members');
-    jamaah = daftar.data || [];
-    kosongkanForm();
-    tampilkanJamaah();
-    await muatKehadiran();
-    pesan(hasil.message, 'sukses');
-  } catch (err) {
-    pesan('Gagal menyimpan jamaah: ' + err.message, 'error');
-  }
-}
-
-async function nonaktifkanJamaah(id) {
-  if (!confirm('Nonaktifkan jamaah ini? Riwayat kehadiran tidak dihapus.')) return;
-
-  try {
-    const hasil = await panggilServer('deleteMember', { id: id });
-    const daftar = await panggilServer('members');
-    jamaah = daftar.data || [];
-    tampilkanJamaah();
-    await muatKehadiran();
-    pesan(hasil.message, 'sukses');
-  } catch (err) {
-    pesan('Gagal menonaktifkan jamaah: ' + err.message, 'error');
-  }
-}
-
-async function muatKehadiran() {
-  const tanggal = document.getElementById('tanggal').value || tanggalHariIni();
-  const kotak = document.getElementById('daftar-hadir');
-
-  try {
-    const hasil = await panggilServer('attendance', { tanggal: tanggal });
-    dataKehadiran = hasil.data || [];
-
-    const aktif = jamaah.filter(function (j) { return j.aktif; });
-
-    if (!aktif.length) {
-      kotak.textContent = 'Belum ada jamaah aktif. Buka menu Data Jamaah untuk menambahkan.';
-      return;
-    }
-
-    kotak.innerHTML = aktif.map(function (j) {
-      const lama = dataKehadiran.find(function (x) {
-        return x.idJamaah === j.id;
-      });
-      const status = lama ? lama.status : 'Alfa';
-      const catatan = lama ? lama.catatan : '';
-
-      return '<div class="item-jamaah">' +
-        '<div class="nama">' + aman(j.no) + '. ' + aman(j.nama) + '</div>' +
-        '<label for="status-' + aman(j.id) + '">Status kehadiran</label>' +
-        '<select id="status-' + aman(j.id) + '" data-id="' + aman(j.id) + '">' +
-        ['Hadir', 'Izin', 'Sakit', 'Alfa'].map(function (s) {
-          return '<option value="' + s + '"' +
-            (s === status ? ' selected' : '') + '>' + s + '</option>';
-        }).join('') + '</select>' +
-        '<label for="catatan-' + aman(j.id) + '">Catatan (opsional)</label>' +
-        '<input id="catatan-' + aman(j.id) + '" maxlength="200" value="' +
-        aman(catatan) + '" placeholder="Catatan">' +
-        '</div>';
-    }).join('');
-  } catch (err) {
-    kotak.textContent = 'Gagal memuat kehadiran: ' + err.message;
-  }
-}
-
-async function simpanKehadiran() {
-  const tanggal = document.getElementById('tanggal').value;
-
-  if (!tanggal) {
-    pesan('Pilih tanggal pertemuan terlebih dahulu.', 'error');
-    return;
-  }
-
-  const aktif = jamaah.filter(function (j) { return j.aktif; });
-  const data = aktif.map(function (j) {
-    return {
-      idJamaah: j.id,
-      status: document.getElementById('status-' + j.id).value,
-      catatan: document.getElementById('catatan-' + j.id).value.trim()
-    };
-  });
-
-  try {
-    pesan('Menyimpan kehadiran...');
-    const hasil = await panggilServer('saveAttendance', {
-      tanggal: tanggal,
-      data: data
-    });
-    pesan(hasil.message, 'sukses');
-    await muatKehadiran();
-  } catch (err) {
-    pesan('Gagal menyimpan kehadiran: ' + err.message, 'error');
-  }
-}
-
-async function muatRekap() {
-  const bulan = document.getElementById('bulan').value;
-  const kotak = document.getElementById('hasil-rekap');
-
-  if (!bulan) {
-    kotak.textContent = 'Pilih bulan terlebih dahulu.';
-    return;
-  }
-
-  kotak.textContent = 'Memuat rekap...';
-
-  try {
-    const hasil = await panggilServer('report', { bulan: bulan });
-    const data = hasil.data || [];
-
-    if (!data.length) {
-      kotak.textContent = 'Belum ada data kehadiran untuk bulan ini.';
-      return;
-    }
-
-    let totalHadir = 0, totalIzin = 0, totalSakit = 0, totalAlfa = 0;
-    data.forEach(function (x) {
-      totalHadir += x.Hadir || 0;
-      totalIzin += x.Izin || 0;
-      totalSakit += x.Sakit || 0;
-      totalAlfa += x.Alfa || 0;
-    });
-
-    kotak.innerHTML =
-      '<div class="angka">' +
-      '<div><strong>' + totalHadir + '</strong><span>Hadir</span></div>' +
-      '<div><strong>' + totalIzin + '</strong><span>Izin</span></div>' +
-      '<div><strong>' + totalSakit + '</strong><span>Sakit</span></div>' +
-      '<div><strong>' + totalAlfa + '</strong><span>Alfa</span></div>' +
-      '</div>' +
-      '<div class="tabel-scroll"><table><thead><tr>' +
-      '<th>No.</th><th>Nama</th><th>Hadir</th><th>Izin</th>' +
-      '<th>Sakit</th><th>Alfa</th><th>Tanggal Hadir</th>' +
-      '</tr></thead><tbody>' +
-      data.map(function (x, i) {
-        return '<tr><td>' + (i + 1) + '</td><td>' + aman(x.nama) +
-          '</td><td>' + x.Hadir + '</td><td>' + x.Izin +
-          '</td><td>' + x.Sakit + '</td><td>' + x.Alfa +
-          '</td><td>' + aman((x.tanggalHadir || []).join(', ')) +
-          '</td></tr>';
-      }).join('') +
-      '</tbody></table></div>';
-  } catch (err) {
-    kotak.textContent = 'Gagal memuat rekap: ' + err.message;
-  }
-}
-
-async function simpanPengaturan() {
-  const data = {
-    judul: document.getElementById('judul-pengaturan').value.trim(),
-    jadwal: document.getElementById('jadwal').value,
-    hariPengajian: document.getElementById('hari').value.trim()
-  };
-
-  try {
-    const hasil = await panggilServer('saveSettings', data);
-    pengaturan = data;
-    document.getElementById('judul').textContent = data.judul ||
-      'Daftar Hadir Jamaah Pengajian AL-HIKMAH';
-    document.getElementById('subjudul').textContent =
-      'Jadwal: ' + data.jadwal +
-      (data.hariPengajian ? ' • ' + data.hariPengajian : '');
-    pesan(hasil.message, 'sukses');
-  } catch (err) {
-    pesan('Gagal menyimpan pengaturan: ' + err.message, 'error');
-  }
-}
-
-mulai();
 </script>
+
+
 </body>
 </html>
