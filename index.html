@@ -93,7 +93,41 @@ padding:8px;
 border-bottom:1px solid #ddd;
 
 }
+.jamaah-card{
 
+background:#ffffff;
+border-radius:14px;
+padding:15px;
+margin-bottom:12px;
+box-shadow:0 2px 6px rgba(0,0,0,.08);
+
+}
+
+
+.jamaah-no{
+
+font-size:13px;
+color:#777;
+
+}
+
+
+.jamaah-nama{
+
+font-size:18px;
+font-weight:bold;
+color:#087f5b;
+margin:5px 0;
+
+}
+
+
+.jamaah-alamat{
+
+font-size:14px;
+color:#555;
+
+}
 </style>
 
 </head>
@@ -166,26 +200,7 @@ Simpan Jamaah
 <h3>Daftar Jamaah</h3>
 
 
-<table>
-
-<thead>
-
-<tr>
-<th>No</th>
-<th>Nama</th>
-<th>Alamat</th>
-</tr>
-
-</thead>
-
-
-<tbody id="tabelJamaah">
-
-</tbody>
-
-
-</table>
-
+<div id="tabelJamaah"></div>
 
 </div>
 
@@ -223,15 +238,24 @@ res.data.forEach((j,i)=>{
 
 html += `
 
-<tr>
+<div class="jamaah-card">
 
-<td>${i+1}</td>
+<div class="jamaah-no">
+No. ${i+1}
+</div>
 
-<td>${j.nama}</td>
 
-<td>${j.alamat}</td>
+<div class="jamaah-nama">
+${j.nama}
+</div>
 
-</tr>
+
+<div class="jamaah-alamat">
+${j.alamat || "-"}
+</div>
+
+
+</div>
 
 `;
 
