@@ -26,6 +26,14 @@ text-align:center;
 padding:15px;
 }
 
+.card{
+background:white;
+padding:20px;
+border-radius:15px;
+margin-bottom:15px;
+box-shadow:0 3px 8px #ddd;
+}
+
 .grid{
 display:grid;
 grid-template-columns:1fr 1fr;
@@ -37,8 +45,6 @@ background:white;
 padding:20px;
 border-radius:15px;
 text-align:center;
-box-shadow:0 3px 8px #ddd;
-cursor:pointer;
 }
 
 .angka{
@@ -47,45 +53,39 @@ font-weight:bold;
 color:#087f5b;
 }
 
-.card{
-background:white;
-padding:20px;
-border-radius:15px;
-margin-top:15px;
-box-shadow:0 3px 8px #ddd;
-}
-
 input,textarea{
 
 width:100%;
 padding:12px;
-box-sizing:border-box;
+margin-top:8px;
 margin-bottom:10px;
+box-sizing:border-box;
 border-radius:8px;
 border:1px solid #ccc;
 
 }
 
+
 button{
 
-width:100%;
-padding:12px;
-border:none;
-border-radius:10px;
 background:#087f5b;
 color:white;
-font-size:16px;
+border:none;
+padding:12px;
+width:100%;
+border-radius:10px;
+cursor:pointer;
 
 }
 
 
 .jamaah-card{
 
-background:#fff;
+background:white;
 padding:15px;
-border-radius:12px;
+border-radius:14px;
 margin-bottom:10px;
-box-shadow:0 2px 5px #ddd;
+box-shadow:0 2px 6px #ddd;
 
 }
 
@@ -99,16 +99,11 @@ color:#087f5b;
 }
 
 
-.alamat{
+.no{
 
-font-size:14px;
-color:#555;
+font-size:13px;
+color:#777;
 
-}
-
-
-.hidden{
-display:none;
 }
 
 </style>
@@ -150,32 +145,34 @@ PENGAJIAN AL-HIKMAH
 
 <div class="menu" onclick="bukaAbsensi()">
 
-<div class="angka" id="jumlahHadir">
-0
+<div class="angka">
+✅
 </div>
 
-✅ Absensi
-
-</div>
-
+Absensi
 
 </div>
 
+
+</div>
 
 
 
 
 <div class="card">
 
+
 <h3>
 Tambah Jamaah
 </h3>
 
 
-<input id="nama" placeholder="Nama Jamaah">
+<input id="nama"
+placeholder="Nama Jamaah">
 
 
-<textarea id="alamat" placeholder="Alamat"></textarea>
+<textarea id="alamat"
+placeholder="Alamat"></textarea>
 
 
 <button onclick="simpanJamaah()">
@@ -188,28 +185,21 @@ Simpan Jamaah
 
 
 
-
-
 <div class="card">
 
 <h3>
 Daftar Jamaah
 </h3>
 
-
-<div id="daftarJamaah">
-Memuat data...
-</div>
-
+<div id="daftarJamaah"></div>
 
 </div>
 
 
 
-
-
-
-<div class="card hidden" id="halamanAbsensi">
+<div class="card"
+id="halamanAbsensi"
+style="display:none;">
 
 
 <h3>
@@ -217,12 +207,12 @@ Absensi Mingguan
 </h3>
 
 
-<input type="date" id="tanggal">
+<input type="date"
+id="tanggalAbsensi">
 
 
-<div id="daftarAbsensi">
 
-</div>
+<div id="daftarAbsensi"></div>
 
 
 <br>
@@ -250,6 +240,7 @@ const API_URL =
 "https://script.google.com/macros/s/AKfycbzrdmWWyFdavRs5ZZa83gPWTSH0TXYu5wN98dLXIamohtfwceAmrUj69XDQGpz-Ta9t/exec";
 
 
+
 let dataJamaah=[];
 
 
@@ -264,7 +255,7 @@ fetch(API_URL+"?action=jamaah")
 .then(res=>{
 
 
-dataJamaah=res.data || [];
+dataJamaah=res.data;
 
 
 document.getElementById(
@@ -276,14 +267,14 @@ document.getElementById(
 let html="";
 
 
-dataJamaah.forEach(function(j,i){
+dataJamaah.forEach((j,i)=>{
 
 
 html+=`
 
 <div class="jamaah-card">
 
-<div>
+<div class="no">
 No. ${i+1}
 </div>
 
@@ -293,7 +284,7 @@ ${j.nama}
 </div>
 
 
-<div class="alamat">
+<div>
 ${j.alamat || "-"}
 </div>
 
@@ -303,24 +294,18 @@ ${j.alamat || "-"}
 `;
 
 
-
 });
 
 
 document.getElementById(
 "daftarJamaah"
-).innerHTML=
-html || "Belum ada jamaah";
+).innerHTML=html;
 
 
 });
 
 
 }
-
-
-loadData();
-
 
 
 
@@ -329,22 +314,17 @@ loadData();
 function simpanJamaah(){
 
 
-let nama=
-document.getElementById("nama").value.trim();
+let data={
 
+action:"simpanJamaah",
 
-let alamat=
-document.getElementById("alamat").value.trim();
+nama:
+nama.value,
 
+alamat:
+alamat.value
 
-
-if(!nama){
-
-alert("Nama jamaah wajib diisi");
-
-return;
-
-}
+};
 
 
 
@@ -352,17 +332,10 @@ fetch(API_URL,{
 
 method:"POST",
 
-body:JSON.stringify({
-
-action:"simpanJamaah",
-
-nama:nama,
-
-alamat:alamat
+body:JSON.stringify(data)
 
 })
 
-})
 
 .then(r=>r.json())
 
@@ -374,9 +347,9 @@ res.pesan || "Berhasil"
 );
 
 
-document.getElementById("nama").value="";
+nama.value="";
 
-document.getElementById("alamat").value="";
+alamat.value="";
 
 
 loadData();
@@ -392,15 +365,10 @@ loadData();
 
 
 
-
-
 function bukaAbsensi(){
 
 
-document.getElementById(
-"halamanAbsensi"
-).classList.remove("hidden");
-
+halamanAbsensi.style.display="block";
 
 
 buatAbsensi();
@@ -412,14 +380,13 @@ buatAbsensi();
 
 
 
-
 function buatAbsensi(){
 
 
 let html="";
 
 
-dataJamaah.forEach(function(j){
+dataJamaah.forEach(j=>{
 
 
 html+=`
@@ -432,15 +399,10 @@ ${j.nama}
 </div>
 
 
-<div>
-✅ Hadir
-</div>
+<input type="checkbox"
+id="hadir_${j.id}">
 
-
-<input 
-type="checkbox"
-id="hadir_${j.id}"
-checked>
+ Hadir
 
 
 </div>
@@ -452,15 +414,10 @@ checked>
 });
 
 
-
-document.getElementById(
-"daftarAbsensi"
-).innerHTML=html;
+daftarAbsensi.innerHTML=html;
 
 
 }
-
-
 
 
 
@@ -471,7 +428,7 @@ function simpanAbsensi(){
 
 
 let tanggal=
-document.getElementById("tanggal").value;
+tanggalAbsensi.value;
 
 
 
@@ -485,10 +442,11 @@ return;
 
 
 
-let data=[];
+let daftar=[];
 
 
-dataJamaah.forEach(function(j){
+
+dataJamaah.forEach(j=>{
 
 
 let cek=
@@ -498,24 +456,37 @@ document.getElementById(
 
 
 
-if(cek.checked){
-
-
-data.push({
+daftar.push({
 
 idJamaah:j.id,
 
 nama:j.nama,
 
-status:"Hadir"
+status:
+cek.checked
+?"Hadir"
+:""
+
+
+});
+
 
 });
 
 
-}
 
 
-});
+let data={
+
+
+action:"saveAttendance",
+
+tanggal:tanggal,
+
+data:daftar
+
+
+};
 
 
 
@@ -524,17 +495,10 @@ fetch(API_URL,{
 
 method:"POST",
 
-body:JSON.stringify({
-
-action:"saveAttendance",
-
-tanggal:tanggal,
-
-data:data
+body:JSON.stringify(data)
 
 })
 
-})
 
 .then(r=>r.json())
 
@@ -542,8 +506,9 @@ data:data
 
 
 alert(
+res.pesan ||
 res.message ||
-"Kehadiran berhasil disimpan"
+"Absensi tersimpan"
 );
 
 
@@ -554,8 +519,14 @@ res.message ||
 
 
 
+
+
+loadData();
+
+
 </script>
 
 
 </body>
+
 </html>
