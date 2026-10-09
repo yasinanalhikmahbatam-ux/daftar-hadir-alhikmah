@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -9,82 +10,89 @@
 <style>
 
 body{
-  margin:0;
-  font-family:Arial, sans-serif;
-  background:#f2f5f9;
-  color:#333;
+margin:0;
+font-family:Arial;
+background:#f2f5f9;
 }
 
 .header{
-  background:#087f5b;
-  color:white;
-  padding:20px;
-  text-align:center;
-}
-
-.header h2{
-  margin:0;
+background:#087f5b;
+color:white;
+padding:20px;
+text-align:center;
 }
 
 .container{
-  padding:15px;
+padding:15px;
 }
-
 
 .card{
-  background:white;
-  border-radius:15px;
-  padding:20px;
-  margin-bottom:15px;
-  box-shadow:0 3px 8px rgba(0,0,0,.1);
+background:white;
+padding:20px;
+border-radius:15px;
+margin-bottom:15px;
+box-shadow:0 3px 8px #ddd;
 }
-
 
 .grid{
- display:grid;
- grid-template-columns:1fr 1fr;
- gap:15px;
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:15px;
 }
-
 
 .menu{
- background:white;
- padding:20px;
- border-radius:15px;
- text-align:center;
- cursor:pointer;
- box-shadow:0 3px 8px rgba(0,0,0,.1);
+background:white;
+padding:20px;
+border-radius:15px;
+text-align:center;
+cursor:pointer;
 }
-
-
-.menu:hover{
- background:#e8fff7;
-}
-
 
 .angka{
- font-size:35px;
- font-weight:bold;
- color:#087f5b;
+font-size:35px;
+font-weight:bold;
+color:#087f5b;
+}
+
+input,textarea{
+
+width:100%;
+padding:12px;
+margin-top:8px;
+margin-bottom:10px;
+box-sizing:border-box;
+border-radius:8px;
+border:1px solid #ccc;
+
 }
 
 
 button{
- background:#087f5b;
- color:white;
- border:none;
- padding:12px 20px;
- border-radius:10px;
- width:100%;
- font-size:16px;
+
+background:#087f5b;
+color:white;
+border:none;
+padding:12px;
+width:100%;
+border-radius:10px;
+
 }
 
 
-.loading{
- text-align:center;
- padding:20px;
+table{
+
+width:100%;
+border-collapse:collapse;
+
 }
 
+
+td,th{
+
+padding:8px;
+border-bottom:1px solid #ddd;
+
+}
 
 </style>
 
@@ -104,71 +112,87 @@ PENGAJIAN AL-HIKMAH
 </div>
 
 
-
 <div class="container">
-
-
-<div class="card">
-
-<h3>Dashboard</h3>
-
-<div id="status" class="loading">
-Mengambil data...
-</div>
-
-
-</div>
-
 
 
 <div class="grid">
 
-
 <div class="menu">
 
-<div class="angka" id="jumlahJamaah">
-0
-</div>
+<div class="angka" id="jumlahJamaah">0</div>
 
-<p>
 👥 Jamaah
-</p>
 
 </div>
-
 
 
 <div class="menu">
 
-<div class="angka" id="jumlahHadir">
-0
-</div>
+<div class="angka" id="jumlahHadir">0</div>
 
-<p>
 ✅ Kehadiran
-</p>
 
 </div>
 
 
 </div>
 
-
-
-<br>
 
 
 <div class="card">
 
-<button onclick="tes()">
-Muat Ulang Data
+<h3>Tambah Jamaah</h3>
+
+
+<input id="nama" placeholder="Nama Jamaah">
+
+
+<textarea id="alamat" placeholder="Alamat"></textarea>
+
+
+<button onclick="simpanJamaah()">
+Simpan Jamaah
 </button>
 
+
+</div>
+
+
+
+
+<div class="card">
+
+
+<h3>Daftar Jamaah</h3>
+
+
+<table>
+
+<thead>
+
+<tr>
+<th>No</th>
+<th>Nama</th>
+<th>Alamat</th>
+</tr>
+
+</thead>
+
+
+<tbody id="tabelJamaah">
+
+</tbody>
+
+
+</table>
+
+
 </div>
 
 
 
 </div>
+
 
 
 
@@ -180,69 +204,49 @@ const API_URL =
 
 
 
-function tes(){
+
+function loadData(){
 
 
-fetch(API_URL+"?action=init")
+fetch(API_URL+"?action=jamaah")
 
 .then(r=>r.json())
 
-.then(data=>{
+.then(res=>{
 
 
-console.log(data);
+let html="";
 
 
+res.data.forEach((j,i)=>{
 
-if(data.ok){
+
+html += `
+
+<tr>
+
+<td>${i+1}</td>
+
+<td>${j.nama}</td>
+
+<td>${j.alamat}</td>
+
+</tr>
+
+`;
+
+});
+
+
+document.getElementById(
+"tabelJamaah"
+).innerHTML=html;
+
 
 
 document.getElementById(
 "jumlahJamaah"
-).innerHTML=data.jumlahJamaah;
-
-
-
-document.getElementById(
-"jumlahHadir"
-).innerHTML=data.jumlahHadir;
-
-
-
-document.getElementById(
-"status"
-).innerHTML=
-"Database terhubung ✅";
-
-
-}
-
-
-else{
-
-
-document.getElementById(
-"status"
-).innerHTML=data.pesan;
-
-
-}
-
-
-
-})
-
-
-.catch(err=>{
-
-
-document.getElementById(
-"status"
-).innerHTML=
-"Koneksi gagal";
-
-
-console.log(err);
+).innerHTML=res.data.length;
 
 
 });
@@ -252,7 +256,59 @@ console.log(err);
 
 
 
-tes();
+
+
+function simpanJamaah(){
+
+
+let data={
+
+action:"simpanJamaah",
+
+nama:
+document.getElementById("nama").value,
+
+alamat:
+document.getElementById("alamat").value
+
+};
+
+
+
+fetch(API_URL,{
+
+method:"POST",
+
+body:JSON.stringify(data)
+
+})
+
+
+.then(r=>r.json())
+
+.then(res=>{
+
+
+alert(res.pesan);
+
+
+document.getElementById("nama").value="";
+
+document.getElementById("alamat").value="";
+
+
+loadData();
+
+
+});
+
+
+}
+
+
+
+
+loadData();
 
 
 </script>
