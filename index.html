@@ -420,37 +420,41 @@ async function loadReport() {
       <hr style="border:0; border-top:2px solid #000; margin-top:14px;">
     </div>
 
+    
     ${
       rows.length
         ? `
-          <table style="width:100%; border-collapse:collapse;">
-            <thead>
-              <tr>
-                <th style="border:1px solid #000; padding:8px;">No.</th>
-                <th style="border:1px solid #000; padding:8px;">Nama Jamaah</th>
-                <th style="border:1px solid #000; padding:8px;">Hadir</th>
-                <th style="border:1px solid #000; padding:8px;">Izin</th>
-                <th style="border:1px solid #000; padding:8px;">Sakit</th>
-                <th style="border:1px solid #000; padding:8px;">Alfa</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${rows.map((item, index) => `
+          <div style="overflow-x:auto;">
+            <table style="width:100%; border-collapse:collapse;">
+              <thead>
                 <tr>
-                  <td style="border:1px solid #000; padding:8px; text-align:center;">${index + 1}</td>
-                  <td style="border:1px solid #000; padding:8px;">${escapeHtml(item.nama)}</td>
-                  <td style="border:1px solid #000; padding:8px; text-align:center;">${Number(item.Hadir || 0)}</td>
-                  <td style="border:1px solid #000; padding:8px; text-align:center;">${Number(item.Izin || 0)}</td>
-                  <td style="border:1px solid #000; padding:8px; text-align:center;">${Number(item.Sakit || 0)}</td>
-                  <td style="border:1px solid #000; padding:8px; text-align:center;">${Number(item.Alfa || 0)}</td>
+                  <th style="border:1px solid #000; padding:8px;">No.</th>
+                  <th style="border:1px solid #000; padding:8px;">Nama Jamaah</th>
+                  <th style="border:1px solid #000; padding:8px;">Hadir</th>
+                  <th style="border:1px solid #000; padding:8px;">Tanggal Hadir</th>
+                  <th style="border:1px solid #000; padding:8px;">Izin</th>
+                  <th style="border:1px solid #000; padding:8px;">Sakit</th>
+                  <th style="border:1px solid #000; padding:8px;">Alfa</th>
                 </tr>
-              `).join('')}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                ${rows.map((item, index) => `
+                  <tr>
+                    <td style="border:1px solid #000; padding:8px; text-align:center;">${index + 1}</td>
+                    <td style="border:1px solid #000; padding:8px;">${escapeHtml(item.nama)}</td>
+                    <td style="border:1px solid #000; padding:8px; text-align:center;">${Number(item.Hadir || 0)}</td>
+                    <td style="border:1px solid #000; padding:8px;">${(item.tanggalHadir || []).map(t => escapeHtml(t)).join(', ') || '-'}</td>
+                    <td style="border:1px solid #000; padding:8px; text-align:center;">${Number(item.Izin || 0)}</td>
+                    <td style="border:1px solid #000; padding:8px; text-align:center;">${Number(item.Sakit || 0)}</td>
+                    <td style="border:1px solid #000; padding:8px; text-align:center;">${Number(item.Alfa || 0)}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
         `
         : '<p>Belum ada data kehadiran pada bulan ini.</p>'
     }
-
     <div style="margin-top:36px; display:flex; justify-content:flex-end;">
       <div style="text-align:center; width:260px;">
         <p>Batam, ${escapeHtml(tanggalCetak)}</p>
