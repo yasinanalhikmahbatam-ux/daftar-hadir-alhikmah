@@ -1,0 +1,188 @@
+```html
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#176b45">
+  <title>Daftar Hadir Jamaah Pengajian AL-HIKMAH</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f3f7f4;
+      color: #203329;
+    }
+    header {
+      background: #176b45;
+      color: white;
+      padding: 24px 16px;
+      text-align: center;
+    }
+    header h1 { margin: 0 0 8px; font-size: 23px; }
+    header p { margin: 0; font-size: 14px; }
+    main { max-width: 900px; margin: 22px auto; padding: 0 14px; }
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 18px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px #0000000d;
+    }
+    h2 { color: #176b45; font-size: 19px; margin-top: 0; }
+    label { display: block; margin: 12px 0 6px; font-weight: bold; }
+    input, select, button {
+      width: 100%;
+      padding: 11px;
+      border: 1px solid #cbd8cf;
+      border-radius: 7px;
+      font-size: 15px;
+    }
+    button {
+      border: 0;
+      background: #176b45;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 12px;
+    }
+    button.secondary { background: #e2eee6; color: #176b45; }
+    .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .stat { background: #e5f3e9; border-radius: 9px; padding: 15px; text-align: center; }
+    .stat strong { display: block; color: #176b45; font-size: 27px; margin-top: 6px; }
+    .muted { color: #617268; font-size: 13px; }
+    #status { white-space: pre-wrap; line-height: 1.5; }
+    @media (max-width: 560px) {
+      .grid { grid-template-columns: 1fr; }
+      header h1 { font-size: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>DAFTAR HADIR JAMAAH PENGAJIAN AL-HIKMAH</h1>
+    <p>Pencatatan kehadiran pengajian mingguan</p>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>Pengaturan Koneksi</h2>
+      <p class="muted">Alamat ini menghubungkan aplikasi dengan Google Sheets melalui Apps Script.</p>
+      <label for="apiUrl">URL Web App Google Apps Script</label>
+      <input id="apiUrl" type="url" placeholder="Tempel URL Web App di sini">
+      <button id="saveUrl">Simpan URL</button>
+      <p id="status">Koneksi belum diperiksa.</p>
+    </section>
+
+    <section class="card">
+      <h2>Ringkasan Kehadiran</h2>
+      <div class="grid">
+        <div class="stat">Jumlah Jamaah<strong id="total">0</strong></div>
+        <div class="stat">Hadir<strong id="present">0</strong></div>
+      </div>
+      <button id="checkConnection" class="secondary">Periksa Koneksi Database</button>
+    </section>
+
+    <section class="card">
+      <h2>Data Jamaah</h2>
+      <label for="memberName">Nama Jamaah</label>
+      <input id="memberName" type="text" placeholder="Masukkan nama jamaah">
+      <button id="addMember">Tambah Jamaah</button>
+      <p class="muted">Daftar jamaah akan ditampilkan setelah koneksi database berhasil.</p>
+      <div id="members">Belum ada data yang dimuat.</div>
+    </section>
+
+    <section class="card">
+      <h2>Daftar Hadir Mingguan</h2>
+      <label for="meetingDate">Tanggal Pengajian</label>
+      <input id="meetingDate" type="date">
+      <button id="loadAttendance" class="secondary">Muat Daftar Hadir</button>
+      <div id="attendance">Daftar hadir belum dimuat.</div>
+      <button id="saveAttendance">Simpan Kehadiran</button>
+    </section>
+
+    <section class="card">
+      <h2>Rekap Bulanan</h2>
+      <label for="reportMonth">Pilih Bulan</label>
+      <input id="reportMonth" type="month">
+      <button id="loadReport" class="secondary">Tampilkan Rekap</button>
+      <div id="report">Rekap belum dimuat.</div>
+    </section>
+  </main>
+
+  <script>
+    const $ = id => document.getElementById(id);
+    const today = new Date();
+    $('meetingDate').value =
+      `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+    $('reportMonth').value = $('meetingDate').value.slice(0,7);
+
+    $('saveUrl').addEventListener('click', () => {
+      const url = $('apiUrl').value.trim();
+      if (!url.startsWith('https://script.google.com/macros/s/')) {
+        $('status').textContent = 'Periksa kembali URL Web App. URL harus diawali https://script.google.com/macros/s/';
+        return;
+      }
+      localStorage.setItem('alhikmahApiUrl', url);
+      $('status').textContent = 'URL tersimpan di browser. Klik Periksa Koneksi Database.';
+    });
+
+    const savedUrl = localStorage.getItem('alhikmahApiUrl');
+    if (savedUrl) $('apiUrl').value = savedUrl;
+
+    function apiUrl() {
+      return $('apiUrl').value.trim() || localStorage.getItem('alhikmahApiUrl') || '';
+    }
+
+    function request(action, extra = {}) {
+      return new Promise((resolve, reject) => {
+        const url = apiUrl();
+        if (!url) return reject(new Error('Isi URL Web App terlebih dahulu.'));
+        const callback = 'alhikmah_cb_' + Date.now() + '_' + Math.floor(Math.random()*10000);
+        const script = document.createElement('script');
+        const params = new URLSearchParams({ action, callback, ...extra });
+        window[callback] = data => {
+          delete window[callback];
+          script.remove();
+          resolve(data);
+        };
+        script.onerror = () => {
+          delete window[callback];
+          script.remove();
+          reject(new Error('Tidak dapat menghubungi database. Periksa URL dan pengaturan deployment Apps Script.'));
+        };
+        script.src = url + '?' + params.toString();
+        document.body.appendChild(script);
+      });
+    }
+
+    $('checkConnection').addEventListener('click', async () => {
+      $('status').textContent = 'Memeriksa koneksi...';
+      try {
+        const data = await request('init');
+        $('status').textContent = 'Respons database diterima. Struktur data: ' + JSON.stringify(data);
+      } catch (e) {
+        $('status').textContent = 'Koneksi gagal: ' + e.message;
+      }
+    });
+
+    $('addMember').addEventListener('click', () => {
+      $('status').textContent = 'Tampilan awal sudah siap. Fitur simpan jamaah perlu disambungkan setelah pemeriksaan koneksi.';
+    });
+
+    $('loadAttendance').addEventListener('click', () => {
+      $('status').textContent = 'Fitur pemuatan daftar hadir akan diaktifkan setelah format respons database diperiksa.';
+    });
+
+    $('saveAttendance').addEventListener('click', () => {
+      $('status').textContent = 'Fitur simpan kehadiran akan diaktifkan setelah koneksi database diuji.';
+    });
+
+    $('loadReport').addEventListener('click', () => {
+      $('status').textContent = 'Fitur rekap akan diaktifkan setelah koneksi database diuji.';
+    });
+  </script>
+</body>
+</html>
+```
