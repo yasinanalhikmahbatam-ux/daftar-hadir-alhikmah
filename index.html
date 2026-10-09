@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#176b45">
+  <link rel="manifest" href="./manifest.json">
   <title>Daftar Hadir Jamaah Pengajian AL-HIKMAH</title>
   <style>
     * { box-sizing: border-box; }
@@ -182,6 +183,15 @@
     $('loadReport').addEventListener('click', () => {
       $('status').textContent = 'Fitur rekap akan diaktifkan setelah koneksi database diuji.';
     });
+  </script>
+
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js")
+          .catch(error => console.error("Service worker:", error));
+      });
+    }
   </script>
 </body>
 </html>
