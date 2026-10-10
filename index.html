@@ -4,6 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#087f5b">
+  <meta name="description" content="Daftar hadir jamaah Pengajian Majelis Yasinan AL-HIKMAH Batam.">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
   <title>Daftar Hadir Jamaah AL-HIKMAH</title>
 
   <style>
@@ -618,6 +622,16 @@
 
   loadData();
   muatLaporan();
+</script>
+
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () {
+      navigator.serviceWorker.register("./service-worker.js").catch(function (err) {
+        console.warn("Service worker belum aktif:", err);
+      });
+    });
+  }
 </script>
 </body>
 </html>
