@@ -1,586 +1,508 @@
+```html
 <!DOCTYPE html>
 <html lang="id">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#087f5b">
+  <title>Daftar Hadir Jamaah Pengajian AL-HIKMAH</title>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-<title>Daftar Hadir Jamaah AL-HIKMAH</title>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f0fdf4;
+      color: #24332b;
+    }
 
-<style>
+    header {
+      background: #087f5b;
+      color: white;
+      text-align: center;
+      padding: 24px 14px;
+    }
 
-body{
-margin:0;
-font-family:Arial,sans-serif;
-background:#f2f5f9;
-}
+    header h1 {
+      margin: 0 0 8px;
+      font-size: 23px;
+    }
 
-.header{
-background:#087f5b;
-color:white;
-padding:20px;
-text-align:center;
-}
+    header p {
+      margin: 0;
+      font-size: 14px;
+    }
 
-.container{
-padding:15px;
-}
+    main {
+      max-width: 750px;
+      margin: 20px auto;
+      padding: 0 12px 30px;
+    }
 
-.grid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:15px;
-}
+    .card {
+      background: white;
+      padding: 18px;
+      margin-bottom: 16px;
+      border-radius: 14px;
+      box-shadow: 0 3px 12px #0000000d;
+    }
 
-.card,.menu{
-background:white;
-padding:20px;
-border-radius:15px;
-margin-top:15px;
-box-shadow:0 3px 8px #ddd;
-}
+    h2, h3 {
+      color: #087f5b;
+      margin-top: 0;
+    }
 
-.menu{
-text-align:center;
-cursor:pointer;
-}
+    label {
+      display: block;
+      margin: 12px 0 6px;
+      font-weight: bold;
+      font-size: 14px;
+    }
 
-.angka{
-font-size:35px;
-font-weight:bold;
-color:#087f5b;
-}
+    input, select, button {
+      width: 100%;
+      padding: 12px;
+      border-radius: 9px;
+      font-size: 16px;
+    }
 
-input,textarea{
+    input, select {
+      border: 1px solid #cbd5ce;
+      background: white;
+    }
 
-width:100%;
-padding:12px;
-box-sizing:border-box;
-margin-top:8px;
-margin-bottom:10px;
-border-radius:8px;
-border:1px solid #ccc;
+    button {
+      border: none;
+      background: #087f5b;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 12px;
+    }
 
-}
+    button:disabled {
+      background: #9ca3af;
+      cursor: wait;
+    }
 
+    .tombol-kedua {
+      background: #e5f5eb;
+      color: #087f5b;
+    }
 
-button{
+    .angka {
+      font-size: 32px;
+      font-weight: bold;
+      color: #087f5b;
+      margin: 8px 0;
+    }
 
-width:100%;
-padding:12px;
-background:#087f5b;
-color:white;
-border:0;
-border-radius:10px;
-font-size:16px;
+    .info {
+      color: #647067;
+      font-size: 13px;
+      margin-top: 10px;
+    }
 
-}
+    .detail {
+      margin-top: 12px;
+      padding: 12px;
+      background: #f0fdf4;
+      border-radius: 9px;
+      line-height: 1.7;
+    }
 
+    .anggota {
+      padding: 12px 4px;
+      border-bottom: 1px solid #e5e7eb;
+    }
 
-.jamaah-card{
+    .anggota:last-child {
+      border-bottom: none;
+    }
 
-background:white;
-padding:15px;
-border-radius:12px;
-margin-bottom:10px;
-box-shadow:0 2px 5px #ddd;
+    .cek-hadir {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      margin: 0;
+      font-weight: normal;
+      font-size: 15px;
+    }
 
-}
+    .cek-hadir input {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+    }
 
+    .nama-anggota {
+      font-weight: bold;
+    }
 
-.nama{
+    .alamat-anggota {
+      color: #647067;
+      font-size: 13px;
+      margin-top: 4px;
+    }
 
-font-size:18px;
-font-weight:bold;
-color:#087f5b;
+    .status {
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 9px;
+      background: #f3f4f6;
+      overflow-wrap: anywhere;
+    }
 
-}
+    .sembunyi {
+      display: none;
+    }
 
-
-.no{
-
-color:#777;
-font-size:13px;
-
-}
-
-
-.hidden{
-
-display:none;
-
-}
-
-</style>
-
+    footer {
+      text-align: center;
+      padding: 16px;
+      color: #647067;
+      font-size: 12px;
+    }
+  </style>
 </head>
 
-
 <body>
-
-
-<div class="header">
-
-<h2>
-DAFTAR HADIR JAMAAH<br>
-PENGAJIAN AL-HIKMAH
-</h2>
-
-</div>
-
-
-
-<div class="container">
-
-
-
-<div class="grid">
-
-
-<div class="menu">
-
-<div class="angka" id="jumlahJamaah">
-0
-</div>
-
-👥 Jamaah
-
-</div>
-
-
-
-<div class="menu" onclick="bukaAbsensi()">
-
-<div class="angka">
-✅
-</div>
-
-Absensi
-
-</div>
-
-
-</div>
-
-
-
-
-
-<div class="card">
-
-
-<h3>
-Tambah Jamaah
-</h3>
-
-
-<input id="nama"
-placeholder="Nama Jamaah">
-
-
-<textarea id="alamat"
-placeholder="Alamat"></textarea>
-
-
-<button onclick="simpanJamaah()">
-Simpan Jamaah
-</button>
-
-
-</div>
-
-
-
-
-
-<div class="card">
-
-<h3>
-Daftar Jamaah
-</h3>
-
-<div id="daftarJamaah">
-Memuat...
-</div>
-
-
-</div>
-
-
-
-
-
-
-<div class="card hidden" id="halamanAbsensi">
-
-
-<h3>
-Absensi Mingguan
-</h3>
-
-
-<input type="date" id="tanggalAbsensi">
-
-
-<div id="daftarAbsensi"></div>
-
-
-<br>
-
-
-<button onclick="simpanAbsensi()">
-Simpan Kehadiran
-</button>
-
-
-</div>
-
-
-
-</div>
-
-
-
-
-
-<script>
-
-
-const API_URL =
-"https://script.google.com/macros/s/AKfycbzrdmWWyFdavRs5ZZa83gPWTSH0TXYu5wN98dLXIamohtfwceAmrUj69XDQGpz-Ta9t/exec";
-
-
-
-let dataJamaah=[];
-
-
-
-
-// =====================
-// AMBIL DATA JAMAAH
-// =====================
-
-function loadData(){
-
-
-fetch(API_URL+"?action=jamaah")
-
-.then(r=>r.json())
-
-.then(res=>{
-
-
-dataJamaah=res.data || [];
-
-
-jumlahJamaah.innerHTML=
-dataJamaah.length;
-
-
-
-let html="";
-
-
-dataJamaah.forEach(function(j,i){
-
-
-html+=`
-
-<div class="jamaah-card">
-
-<div class="no">
-No. ${i+1}
-</div>
-
-
-<div class="nama">
-${j.nama}
-</div>
-
-
-<div>
-${j.alamat || "-"}
-</div>
-
-
-</div>
-
-`;
-
-
-});
-
-
-daftarJamaah.innerHTML=
-html || "Belum ada jamaah";
-
-
-});
-
-
-}
-
-
-
-loadData();
-
-
-
-
-
-
-// =====================
-// SIMPAN JAMAAH
-// =====================
-
-function simpanJamaah(){
-
-
-let data={
-
-
-action:"simpanJamaah",
-
-nama:
-nama.value,
-
-
-alamat:
-alamat.value
-
-
-};
-
-
-
-kirim(data);
-
-
-nama.value="";
-alamat.value="";
-
-
-}
-
-
-
-
-
-// =====================
-// BUKA ABSENSI
-// =====================
-
-function bukaAbsensi(){
-
-
-halamanAbsensi.classList.remove("hidden");
-
-
-buatAbsensi();
-
-
-}
-
-
-
-
-
-function buatAbsensi(){
-
-
-let html="";
-
-
-dataJamaah.forEach(function(j){
-
-
-html+=`
-
-<div class="jamaah-card">
-
-
-<div class="nama">
-${j.nama}
-</div>
-
-
-<div>
-<input type="checkbox"
-id="hadir_${j.id}"
-checked>
-
-✅ Hadir
-
-</div>
-
-
-</div>
-
-
-`;
-
-
-});
-
-
-daftarAbsensi.innerHTML=html;
-
-
-}
-
-
-
-
-
-
-// =====================
-// SIMPAN ABSENSI
-// =====================
-
-
-function simpanAbsensi(){
-
-
-let tanggal=
-tanggalAbsensi.value;
-
-
-
-if(!tanggal){
-
-alert("Pilih tanggal dulu");
-return;
-
-}
-
-
-
-let daftar=[];
-
-
-
-dataJamaah.forEach(function(j){
-
-
-let cek=
-document.getElementById(
-"hadir_"+j.id
-);
-
-
-
-if(cek.checked){
-
-
-daftar.push({
-
-idJamaah:j.id,
-
-nama:j.nama,
-
-status:"Hadir"
-
-});
-
-
-}
-
-
-});
-
-
-
-
-let payload={
-
-
-action:"saveAttendance",
-
-tanggal:tanggal,
-
-data:daftar
-
-
-};
-
-
-
-kirim(payload);
-
-
-}
-
-
-
-
-
-
-// =====================
-// KIRIM KE APPS SCRIPT
-// =====================
-
-
-function kirim(data){
-
-
-
-fetch(API_URL,{
-
-method:"POST",
-
-headers:{
-
-"Content-Type":
-"application/x-www-form-urlencoded"
-
-},
-
-body:
-
-"payload="+
-encodeURIComponent(
-JSON.stringify(data)
-)
-
-
-})
-
-
-.then(r=>r.json())
-
-
-.then(res=>{
-
-
-alert(
-res.pesan ||
-res.message
-);
-
-
-loadData();
-
-
-})
-
-
-.catch(err=>{
-
-
-alert(
-"Gagal: "+err
-);
-
-
-});
-
-
-}
-
-
-
-</script>
-
-
+  <header>
+    <h1>DAFTAR HADIR JAMAAH</h1>
+    <p>PENGAJIAN AL-HIKMAH</p>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>Dashboard</h2>
+      <div>Jumlah Jamaah Terdaftar</div>
+      <div class="angka" id="jumlahJamaah">0</div>
+      <button type="button" onclick="loadData()"
+        class="tombol-kedua">Muat Ulang Data</button>
+    </section>
+
+    <section class="card">
+      <h3>Pilih Nama Jamaah</h3>
+      <label for="pilihanJamaah">Nama Jamaah</label>
+      <select id="pilihanJamaah" onchange="lihatJamaah()">
+        <option value="">-- Pilih Nama Jamaah --</option>
+      </select>
+      <div id="detailJamaah" class="detail">
+        Pilih nama jamaah untuk melihat alamat.
+      </div>
+    </section>
+
+    <section class="card">
+      <h3>Tambah Jamaah Baru</h3>
+      <form id="formJamaah" onsubmit="simpanJamaah(event)">
+        <label for="namaBaru">Nama Jamaah</label>
+        <input id="namaBaru" type="text"
+          placeholder="Masukkan nama jamaah" required>
+
+        <label for="alamatBaru">Alamat</label>
+        <input id="alamatBaru" type="text"
+          placeholder="Masukkan alamat">
+
+        <button id="tombolSimpanJamaah" type="submit">
+          Simpan Jamaah
+        </button>
+      </form>
+    </section>
+
+    <section class="card">
+      <h3>Absensi Pertemuan Mingguan</h3>
+
+      <label for="tanggalAbsensi">Tanggal Pertemuan</label>
+      <input id="tanggalAbsensi" type="date" required>
+
+      <p class="info">
+        Centang jamaah yang hadir pada pertemuan ini.
+      </p>
+
+      <div id="daftarAbsensi">Memuat data jamaah...</div>
+
+      <button id="tombolAbsensi" type="button"
+        onclick="simpanAbsensi()">
+        Simpan Absensi
+      </button>
+    </section>
+
+    <div id="pesan" class="status" role="status" aria-live="polite">
+      Menghubungkan ke server...
+    </div>
+  </main>
+
+  <footer>
+    Pembukuan dan kehadiran jamaah Pengajian AL-HIKMAH
+  </footer>
+
+  <script>
+    const API_URL =
+      "https://script.google.com/macros/s/AKfycbzrdmWWyFdavRs5ZZa83gPWTSH0TXYu5wN98dLXIamohtfwceAmrUj69XDQGpz-Ta9t/exec";
+
+    let dataJamaah = [];
+    let sedangMemuat = false;
+
+    function tampilPesan(teks) {
+      document.getElementById("pesan").textContent = teks;
+    }
+
+    function tanggalHariIni() {
+      const sekarang = new Date();
+      const tahun = sekarang.getFullYear();
+      const bulan = String(sekarang.getMonth() + 1).padStart(2, "0");
+      const hari = String(sekarang.getDate()).padStart(2, "0");
+      return tahun + "-" + bulan + "-" + hari;
+    }
+
+    document.getElementById("tanggalAbsensi").value = tanggalHariIni();
+
+    async function loadData() {
+      if (sedangMemuat) return;
+
+      sedangMemuat = true;
+      tampilPesan("Sedang memuat data jamaah...");
+
+      try {
+        const respons = await fetch(API_URL + "?action=jamaah");
+        if (!respons.ok) {
+          throw new Error("Server memberikan respons " + respons.status);
+        }
+
+        const hasil = await respons.json();
+
+        if (!hasil.ok) {
+          throw new Error(hasil.pesan || hasil.error ||
+            "Gagal mengambil data jamaah.");
+        }
+
+        dataJamaah = Array.isArray(hasil.data) ? hasil.data : [];
+
+        document.getElementById("jumlahJamaah").textContent =
+          dataJamaah.length;
+
+        isiPilihanJamaah();
+        buatAbsensi();
+
+        tampilPesan("Data berhasil dimuat. Jumlah jamaah: " +
+          dataJamaah.length + ".");
+      } catch (err) {
+        tampilPesan("Gagal memuat data: " + err.message +
+          ". Periksa URL Apps Script dan koneksi internet.");
+        document.getElementById("daftarAbsensi").textContent =
+          "Data belum dapat dimuat.";
+      } finally {
+        sedangMemuat = false;
+      }
+    }
+
+    function isiPilihanJamaah() {
+      const pilihan = document.getElementById("pilihanJamaah");
+      const pilihanLama = pilihan.value;
+
+      pilihan.innerHTML = "";
+
+      const awal = document.createElement("option");
+      awal.value = "";
+      awal.textContent = "-- Pilih Nama Jamaah --";
+      pilihan.appendChild(awal);
+
+      dataJamaah.forEach(function(j) {
+        const opsi = document.createElement("option");
+        opsi.value = String(j.id);
+        opsi.textContent = j.nama || "Tanpa Nama";
+        pilihan.appendChild(opsi);
+      });
+
+      if (dataJamaah.some(function(j) {
+        return String(j.id) === pilihanLama;
+      })) {
+        pilihan.value = pilihanLama;
+      }
+
+      lihatJamaah();
+    }
+
+    function lihatJamaah() {
+      const id = document.getElementById("pilihanJamaah").value;
+      const detail = document.getElementById("detailJamaah");
+      detail.innerHTML = "";
+
+      if (!id) {
+        detail.textContent = "Pilih nama jamaah untuk melihat alamat.";
+        return;
+      }
+
+      const jamaah = dataJamaah.find(function(j) {
+        return String(j.id) === id;
+      });
+
+      if (!jamaah) {
+        detail.textContent = "Data jamaah tidak ditemukan.";
+        return;
+      }
+
+      const nama = document.createElement("div");
+      nama.className = "nama-anggota";
+      nama.textContent = jamaah.nama || "-";
+
+      const alamat = document.createElement("div");
+      alamat.textContent = "Alamat: " + (jamaah.alamat || "-");
+
+      detail.appendChild(nama);
+      detail.appendChild(alamat);
+    }
+
+    function buatAbsensi() {
+      const wadah = document.getElementById("daftarAbsensi");
+      wadah.innerHTML = "";
+
+      if (dataJamaah.length === 0) {
+        wadah.textContent = "Belum ada jamaah. Tambahkan jamaah terlebih dahulu.";
+        return;
+      }
+
+      dataJamaah.forEach(function(j, indeks) {
+        const baris = document.createElement("div");
+        baris.className = "anggota";
+
+        const label = document.createElement("label");
+        label.className = "cek-hadir";
+        label.htmlFor = "hadir_" + indeks;
+
+        const cek = document.createElement("input");
+        cek.type = "checkbox";
+        cek.id = "hadir_" + indeks;
+        cek.dataset.id = String(j.id);
+        cek.dataset.nama = j.nama || "";
+        cek.checked = true;
+
+        const teks = document.createElement("span");
+        teks.textContent = j.nama || "Tanpa Nama";
+
+        label.appendChild(cek);
+        label.appendChild(teks);
+        baris.appendChild(label);
+        wadah.appendChild(baris);
+      });
+    }
+
+    async function kirim(data) {
+      const isi = new URLSearchParams();
+      isi.append("payload", JSON.stringify(data));
+
+      const respons = await fetch(API_URL, {
+        method: "POST",
+        body: isi
+      });
+
+      if (!respons.ok) {
+        throw new Error("Server memberikan respons " + respons.status);
+      }
+
+      return await respons.json();
+    }
+
+    async function simpanJamaah(event) {
+      event.preventDefault();
+
+      const nama = document.getElementById("namaBaru").value.trim();
+      const alamat = document.getElementById("alamatBaru").value.trim();
+      const tombol = document.getElementById("tombolSimpanJamaah");
+
+      if (!nama) {
+        tampilPesan("Nama jamaah wajib diisi.");
+        return;
+      }
+
+      tombol.disabled = true;
+      tombol.textContent = "Menyimpan...";
+
+      try {
+        const hasil = await kirim({
+          action: "simpanJamaah",
+          nama: nama,
+          alamat: alamat
+        });
+
+        if (!hasil.ok) {
+          throw new Error(hasil.pesan || hasil.error ||
+            "Gagal menyimpan jamaah.");
+        }
+
+        document.getElementById("formJamaah").reset();
+        await loadData();
+        tampilPesan("Jamaah berhasil disimpan.");
+      } catch (err) {
+        tampilPesan("Gagal menyimpan jamaah: " + err.message);
+      } finally {
+        tombol.disabled = false;
+        tombol.textContent = "Simpan Jamaah";
+      }
+    }
+
+    async function simpanAbsensi() {
+      const tanggal = document.getElementById("tanggalAbsensi").value;
+      const tombol = document.getElementById("tombolAbsensi");
+
+      if (!tanggal) {
+        tampilPesan("Pilih tanggal pertemuan terlebih dahulu.");
+        return;
+      }
+
+      if (dataJamaah.length === 0) {
+        tampilPesan("Belum ada data jamaah untuk diabsen.");
+        return;
+      }
+
+      const centang = document.querySelectorAll(
+        '#daftarAbsensi input[type="checkbox"]:checked'
+      );
+
+      const data = Array.from(centang).map(function(cek) {
+        return {
+          idJamaah: cek.dataset.id,
+          nama: cek.dataset.nama,
+          status: "Hadir"
+        };
+      });
+
+      if (data.length === 0) {
+        tampilPesan("Belum ada jamaah yang dicentang hadir.");
+        return;
+      }
+
+      tombol.disabled = true;
+      tombol.textContent = "Menyimpan Absensi...";
+
+      try {
+        const hasil = await kirim({
+          action: "saveAttendance",
+          tanggal: tanggal,
+          data: data
+        });
+
+        if (!hasil.ok) {
+          throw new Error(hasil.pesan || hasil.error ||
+            "Gagal menyimpan absensi.");
+        }
+
+        tampilPesan("Absensi berhasil disimpan. Jumlah hadir: " +
+          data.length + " jamaah, tanggal " + tanggal + ".");
+      } catch (err) {
+        tampilPesan("Gagal menyimpan absensi: " + err.message);
+      } finally {
+        tombol.disabled = false;
+        tombol.textContent = "Simpan Absensi";
+      }
+    }
+
+    loadData();
+  </script>
 </body>
 </html>
+```
