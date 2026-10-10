@@ -238,8 +238,8 @@
     <h2>Rekap Laporan Kehadiran</h2>
 
     <div class="jangan-cetak">
-      <label for="filterTanggal">Filter Tanggal</label>
-      <input id="filterTanggal" type="date">
+      <label for="filterTanggal">Pilih Bulan Laporan</label>
+      <input id="filterTanggal" type="month">
 
       <button onclick="muatLaporan()">Tampilkan Semua Laporan</button>
       <button class="sekunder" onclick="cetakLaporan()">
@@ -254,13 +254,14 @@
         <thead>
           <tr>
             <th>No.</th>
-            <th>Tanggal Hadir</th>
             <th>Nama Jamaah</th>
-            <th>Status</th>
+            <th>Bulan</th>
+            <th>Tanggal Hadir</th>
+            <th>Jumlah Hadir</th>
           </tr>
         </thead>
         <tbody id="isiLaporan">
-          <tr><td colspan="4">Memuat laporan...</td></tr>
+          <tr><td colspan="5">Memuat laporan...</td></tr>
         </tbody>
       </table>
     </div>
@@ -495,7 +496,7 @@
   async function muatLaporan() {
     const area = document.getElementById("isiLaporan");
     const ringkasan = document.getElementById("ringkasanLaporan");
-    area.innerHTML = '<tr><td colspan="4">Memuat laporan...</td></tr>';
+    area.innerHTML = '<tr><td colspan="5">Memuat laporan...</td></tr>';
 
     try {
       // Memerlukan action=laporan pada Code.gs.
@@ -508,7 +509,7 @@
       dataLaporan = Array.isArray(hasil.data) ? hasil.data : [];
       tampilkanLaporan();
     } catch (e) {
-      area.innerHTML = '<tr><td colspan="4">Laporan gagal dimuat.</td></tr>';
+      area.innerHTML = '<tr><td colspan="5">Laporan gagal dimuat.</td></tr>';
       ringkasan.textContent =
         "Periksa apakah action laporan sudah ditambahkan di Code.gs. " + e.message;
     }
@@ -517,39 +518,61 @@
   function tampilkanLaporan() {
     const area = document.getElementById("isiLaporan");
     const ringkasan = document.getElementById("ringkasanLaporan");
-    const filter = document.getElementById("filterTanggal").value;
+    const filterBulan = document.getElementById("filterTanggal").value; // format YYYY-MM
 
     area.innerHTML = "";
 
-    const hasil = dataLaporan.filter(r => {
+    // Kelompokkan catatan menjadi satu baris per jamaah untuk setiap bulan.
+    const kelompok = new Map();
+    dataLaporan.forEach(r => {
       const tanggal = String(r.tanggal || "").slice(0, 10);
-      return !filter || tanggal === filter;
+      const bulan = tanggal.slice(0, 7);
+      if (!tanggal || (filterBulan && bulan !== filterBulan)) return;
+      const nama = String(r.nama || "-");
+      const kunci = bulan + "|" + nama;
+      if (!kelompok.has(kunci)) {
+        kelompok.set(kunci, { nama, bulan, tanggal: new Set() });
+      }
+      if (String(r.status || "Hadir").toLowerCase() === "hadir") {
+        kelompok.get(kunci).tanggal.add(tanggal);
+      }
     });
 
-    hasil.sort((a, b) =>
-      String(b.tanggal || "").localeCompare(String(a.tanggal || "")) ||
-      String(a.nama || "").localeCompare(String(b.nama || ""))
-    );
+    const hasil = Array.from(kelompok.values()).map(x => ({
+      nama: x.nama,
+      bulan: x.bulan,
+      tanggal: Array.from(x.tanggal).sort()
+    })).filter(x => x.tanggal.length > 0);
 
-    ringkasan.textContent = "Jumlah catatan kehadiran: " + hasil.length;
+    hasil.sort((a, b) => a.bulan.localeCompare(b.bulan) || a.nama.localeCompare(b.nama, "id"));
+    const totalKehadiran = hasil.reduce((jumlah, x) => jumlah + x.tanggal.length, 0);
+    ringkasan.textContent = "Jumlah jamaah: " + hasil.length + " | Total kehadiran: " + totalKehadiran;
 
     if (hasil.length === 0) {
-      area.innerHTML = '<tr><td colspan="4">Belum ada data kehadiran untuk tanggal ini.</td></tr>';
+      area.innerHTML = '<tr><td colspan="5">Belum ada data kehadiran untuk bulan ini.</td></tr>';
       return;
     }
 
     hasil.forEach((r, i) => {
       const tr = document.createElement("tr");
-
-      [i + 1, formatTanggal(r.tanggal), r.nama || "-", r.status || "-"]
+      const tanggalRingkas = r.tanggal.map(t => t.slice(8, 10)).join(", ");
+      const bulanTeks = formatBulan(r.bulan);
+      [i + 1, r.nama, bulanTeks, tanggalRingkas, r.tanggal.length + " kali"]
         .forEach(nilai => {
           const td = document.createElement("td");
           td.textContent = nilai;
           tr.appendChild(td);
         });
-
       area.appendChild(tr);
     });
+  }
+
+  function formatBulan(nilai) {
+    if (!nilai) return "-";
+    const bagian = nilai.split("-");
+    const namaBulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+    const nomor = Number(bagian[1]);
+    return (namaBulan[nomor - 1] || bagian[1]) + " " + bagian[0];
   }
 
   function formatTanggal(nilai) {
